@@ -37,7 +37,7 @@ public class WolfHeldItemLayer extends RenderLayer<Wolf, WolfModel<Wolf>> {
 			p_117007_.mulPose(Vector3f.ZP.rotation(f1));
 			p_117007_.mulPose(Vector3f.YP.rotationDegrees(p_117015_));
 			p_117007_.mulPose(Vector3f.XP.rotationDegrees(p_117016_));
-
+			p_117007_.translate(0.059D, 0.15D, -0.42D);
 			p_117007_.mulPose(Vector3f.XP.rotationDegrees(90.0F));
 
 			ItemStack itemstack = p_117010_.getItemBySlot(EquipmentSlot.MAINHAND);

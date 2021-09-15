@@ -94,6 +94,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		}
 	}
 
+	@Override
 	protected void completeUsingItem() {
 		InteractionHand hand = this.getUsedItemHand();
 		if (this.useItem.equals(this.getItemInHand(hand))) {
@@ -129,6 +130,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		return itemstack.isEmpty() && item.isEdible() && item.getFoodProperties().isMeat();
 	}
 
+	@Override
 	protected void pickUpItem(ItemEntity p_28514_) {
 		ItemStack itemstack = p_28514_.getItem();
 		if (this.canHoldItem(itemstack)) {
