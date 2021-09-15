@@ -5,10 +5,12 @@
   "minVersion": "0.8",
   "refmap": "revampedwolf.refmap.json",
   "mixins": [
-    "BlockMixin",
-    "LakesFeatureMixin"
+    "WolfMixin"
   ],
-  "client": [],
+  "client": [
+    "client.WolfModelMixin",
+    "client.WolfRendererMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
