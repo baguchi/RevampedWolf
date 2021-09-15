@@ -1,5 +1,6 @@
 package baguchan.revampedwolf.mixin;
 
+import baguchan.revampedwolf.api.IHunger;
 import baguchan.revampedwolf.api.IHunt;
 import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
 import baguchan.revampedwolf.entity.goal.MoveToMeatGoal;
@@ -31,10 +32,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.function.Predicate;
 
 @Mixin(Wolf.class)
-public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHunt {
+public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHunt, IHunger {
 
-	private int cooldown;
+	private int huntCooldown;
 	private int eatTick;
+	private int hungerTick;
 
 	@Shadow
 	@Final
@@ -78,6 +80,9 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	@Inject(method = "aiStep", at = @At("HEAD"), cancellable = true)
 	public void aiStep(CallbackInfo callbackInfo) {
 		if (!this.level.isClientSide && this.isAlive()) {
+			if (this.hungerTick > 0) {
+				this.hungerTick--;
+			}
 
 			ItemStack mainhand = this.getItemInHand(InteractionHand.MAIN_HAND);
 
@@ -153,35 +158,47 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	@Inject(method = "addAdditionalSaveData", at = @At("TAIL"), cancellable = true)
 	public void addAdditionalSaveData(CompoundTag p_213281_1_, CallbackInfo callbackInfo) {
-		p_213281_1_.putInt("HuntingCooldown", this.cooldown);
+		p_213281_1_.putInt("HuntingCooldown", this.huntCooldown);
 		p_213281_1_.putInt("EatTick", this.eatTick);
+		p_213281_1_.putInt("HungerTick", this.hungerTick);
 	}
 
 	@Inject(method = "readAdditionalSaveData", at = @At("TAIL"), cancellable = true)
 	public void readAdditionalSaveData(CompoundTag p_70037_1_, CallbackInfo callbackInfo) {
-		this.cooldown = p_70037_1_.getInt("HuntingCooldown");
+		this.huntCooldown = p_70037_1_.getInt("HuntingCooldown");
 		this.eatTick = p_70037_1_.getInt("EatTick");
+		this.hungerTick = p_70037_1_.getInt("HungerTick");
 		this.setCanPickUpLoot(true);
 	}
 
 	@Override
 	public void killed(ServerLevel p_241847_1_, LivingEntity p_241847_2_) {
 		super.killed(p_241847_1_, p_241847_2_);
-		this.setHuntCooldown(600);
+		this.setHuntCooldown(1200);
 	}
 
 	@Override
 	public void setHuntCooldown(int cooldown) {
-		this.cooldown = cooldown;
+		this.huntCooldown = cooldown;
 	}
 
 	@Override
 	public int getHuntCooldown() {
-		return this.cooldown;
+		return this.huntCooldown;
 	}
 
 	@Override
 	public boolean isHunted() {
-		return this.cooldown > 0;
+		return this.huntCooldown > 0;
+	}
+
+	@Override
+	public int getHunger() {
+		return this.hungerTick;
+	}
+
+	@Override
+	public void setHunger(int hunger) {
+		this.hungerTick = hunger;
 	}
 }
