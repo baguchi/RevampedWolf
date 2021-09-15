@@ -132,20 +132,22 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	@Override
 	protected void pickUpItem(ItemEntity p_28514_) {
-		ItemStack itemstack = p_28514_.getItem();
-		if (this.canHoldItem(itemstack)) {
-			int i = itemstack.getCount();
-			if (i > 1) {
-				this.dropItemStack(itemstack.split(i - 1));
-			}
+		if (!this.isTame()) {
+			ItemStack itemstack = p_28514_.getItem();
+			if (this.canHoldItem(itemstack)) {
+				int i = itemstack.getCount();
+				if (i > 1) {
+					this.dropItemStack(itemstack.split(i - 1));
+				}
 
-			this.spitOutItem(this.getItemBySlot(EquipmentSlot.MAINHAND));
-			this.onItemPickup(p_28514_);
-			this.setItemSlot(EquipmentSlot.MAINHAND, itemstack.split(1));
-			this.handDropChances[EquipmentSlot.MAINHAND.getIndex()] = 2.0F;
-			this.take(p_28514_, itemstack.getCount());
-			p_28514_.discard();
-			this.eatTick = 0;
+				this.spitOutItem(this.getItemBySlot(EquipmentSlot.MAINHAND));
+				this.onItemPickup(p_28514_);
+				this.setItemSlot(EquipmentSlot.MAINHAND, itemstack.split(1));
+				this.handDropChances[EquipmentSlot.MAINHAND.getIndex()] = 2.0F;
+				this.take(p_28514_, itemstack.getCount());
+				p_28514_.discard();
+				this.eatTick = 0;
+			}
 		}
 	}
 
