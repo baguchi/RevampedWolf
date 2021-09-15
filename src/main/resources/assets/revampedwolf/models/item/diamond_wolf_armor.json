@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "revampedwolf:item/diamond_wolf_armor"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  X",
+    "XXX",
+    "B B"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:iron_boots"
+    },
+    "X": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "revampedwolf:iron_wolf_armor"
+  }
+}

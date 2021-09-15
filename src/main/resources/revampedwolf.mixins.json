@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "baguchan.revampedwolf.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "revampedwolf.refmap.json",
+  "mixins": [
+    "BlockMixin",
+    "LakesFeatureMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

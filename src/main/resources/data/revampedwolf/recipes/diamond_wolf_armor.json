@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  X",
+    "XXX",
+    "B B"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:diamond_boots"
+    },
+    "X": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "item": "revampedwolf:diamond_wolf_armor"
+  }
+}
