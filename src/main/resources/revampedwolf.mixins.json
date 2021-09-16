@@ -5,7 +5,8 @@
   "minVersion": "0.8",
   "refmap": "revampedwolf.refmap.json",
   "mixins": [
-    "WolfMixin"
+    "WolfMixin",
+    "server.ServerPlayerMixin"
   ],
   "client": [
     "client.WolfModelMixin",

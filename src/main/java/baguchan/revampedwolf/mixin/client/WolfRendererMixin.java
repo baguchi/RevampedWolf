@@ -1,5 +1,6 @@
 package baguchan.revampedwolf.mixin.client;
 
+import baguchan.revampedwolf.client.render.layer.WolfArmorLayer;
 import baguchan.revampedwolf.client.render.layer.WolfHeldItemLayer;
 import net.minecraft.client.model.WolfModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -26,5 +27,6 @@ public abstract class WolfRendererMixin extends MobRenderer<Wolf, WolfModel<Wolf
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void onConstructor(EntityRendererProvider.Context ctx, CallbackInfo info) {
 		addLayer(new WolfHeldItemLayer(this));
+		addLayer(new WolfArmorLayer(this, ctx.getModelSet()));
 	}
 }
