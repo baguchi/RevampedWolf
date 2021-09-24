@@ -5,6 +5,7 @@ import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
 import baguchan.revampedwolf.entity.goal.MoveToMeatGoal;
 import baguchan.revampedwolf.entity.goal.WolfAvoidEntityGoal;
 import baguchan.revampedwolf.item.WolfArmorItem;
+import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -261,6 +262,9 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	private void updateContainerEquipment() {
 		if (!this.level.isClientSide) {
+			this.setItemSlot(EquipmentSlot.CHEST, this.inventory.getItem(0));
+			this.setDropChance(EquipmentSlot.CHEST, 0.0F);
+
 			ItemStack stack = this.inventory.getItem(0);
 			AttributeInstance armor = this.getAttribute(Attributes.ARMOR);
 			if (this.isArmor(stack)) {
@@ -283,9 +287,13 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 					}
 				}
 			}
-			this.setItemSlot(EquipmentSlot.CHEST, this.inventory.getItem(0));
-			this.setDropChance(EquipmentSlot.CHEST, 0.0F);
+
 		}
+	}
+
+	public SlotAccess getSlot(int p_149743_) {
+		int i = p_149743_ - 300;
+		return i >= 0 && i < this.inventory.getContainerSize() ? SlotAccess.forContainer(this.inventory, i) : super.getSlot(p_149743_);
 	}
 
 	@Override
@@ -345,6 +353,31 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		return this.getItemBySlot(EquipmentSlot.CHEST);
 	}
 
+	@Override
+	public Iterable<ItemStack> getArmorSlots() {
+		return Lists.newArrayList(this.inventory.getItem(0));
+	}
+
+	public ItemStack getItemBySlot(EquipmentSlot p_21467_) {
+		switch (p_21467_.getType()) {
+			case ARMOR:
+				return this.inventory.getItem(0);
+			default:
+				return super.getItemBySlot(p_21467_);
+		}
+	}
+
+	public void setItemSlot(EquipmentSlot p_21416_, ItemStack p_21417_) {
+		this.verifyEquippedItem(p_21417_);
+		switch (p_21416_.getType()) {
+			case HAND:
+				super.setItemSlot(p_21416_, p_21417_);
+				break;
+			case ARMOR:
+				this.inventory.setItem(0, p_21417_);
+		}
+	}
+
 	public boolean hasInventoryChanged(Container p_149512_) {
 		return this.inventory != p_149512_;
 	}
@@ -356,7 +389,11 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	@Override
 	public void containerChanged(Container p_18983_) {
-		this.playSound(SoundEvents.ARMOR_EQUIP_GENERIC, 1.0F, 1.0F);
-		this.updateContainerEquipment();
+		ItemStack itemstack = this.getArmor();
+		ItemStack itemstack1 = this.getArmor();
+		if (this.tickCount > 20 && this.isArmor(itemstack1) && itemstack != itemstack1) {
+			this.playSound(SoundEvents.ARMOR_EQUIP_GENERIC, 1.0F, 1.0F);
+			this.updateContainerEquipment();
+		}
 	}
 }
