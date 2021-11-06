@@ -17,7 +17,7 @@ public class HuntTargetGoal<T extends LivingEntity> extends NearestAttackableTar
 	}
 
 	public boolean canUse() {
-		return !this.tamableMob.isTame() && (!(this.tamableMob instanceof IHunt) || ((IHunt) this.tamableMob).isHunted()) && super.canUse();
+		return !this.tamableMob.isTame() && (!(this.tamableMob instanceof IHunt) || !((IHunt) this.tamableMob).isHunted()) && super.canUse();
 	}
 
 	public boolean canContinueToUse() {
