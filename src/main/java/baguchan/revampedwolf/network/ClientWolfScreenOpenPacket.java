@@ -1,8 +1,7 @@
 package baguchan.revampedwolf.network;
 
 import baguchan.revampedwolf.api.IHasInventory;
-import baguchan.revampedwolf.client.screen.WolfInventoryScreen;
-import baguchan.revampedwolf.inventory.WolfInventoryMenu;
+import baguchan.revampedwolf.client.ClientPacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -47,10 +46,7 @@ public class ClientWolfScreenOpenPacket {
 					if (entity instanceof Wolf) {
 						Wolf wolf = (Wolf) entity;
 						if (wolf instanceof IHasInventory) {
-							WolfInventoryMenu wolfInventoryContainer = new WolfInventoryMenu(packet.containerId, clientPlayer.getInventory(), ((IHasInventory) wolf).getContainer(), wolf);
-							clientPlayer.containerMenu = wolfInventoryContainer;
-							WolfInventoryScreen wolfInventoryScreen = new WolfInventoryScreen(wolfInventoryContainer, clientPlayer.getInventory(), wolf);
-							minecraft.setScreen(wolfInventoryScreen);
+							ClientPacketHandler.openWolfInventory(wolf, clientPlayer, packet.containerId);
 						}
 					}
 				}
