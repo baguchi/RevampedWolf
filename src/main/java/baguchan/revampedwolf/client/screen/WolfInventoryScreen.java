@@ -10,7 +10,10 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class WolfInventoryScreen extends AbstractContainerScreen<WolfInventoryMenu> {
 	private static final ResourceLocation HORSE_INVENTORY_LOCATION = new ResourceLocation(RevampedWolf.MODID, "textures/gui/container/wolf.png");
 	private final Wolf wolf;

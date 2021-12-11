@@ -12,7 +12,7 @@ import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,7 +37,7 @@ public abstract class ServerPlayerMixin extends Player implements IOpenWolfConta
 		}
 
 		this.nextContainerCounter();
-		ClientWolfScreenOpenPacket message = new ClientWolfScreenOpenPacket(this.containerCounter, p_9060_.getContainerSize(), p_9059_.getId());
+		ClientWolfScreenOpenPacket message = new ClientWolfScreenOpenPacket(this.containerCounter, p_9059_.getId());
 		RevampedWolf.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> p_9059_), message);
 		this.containerMenu = new WolfInventoryMenu(this.containerCounter, this.getInventory(), p_9060_, p_9059_);
 		this.containerMenu.addSlotListener(this.containerListener);

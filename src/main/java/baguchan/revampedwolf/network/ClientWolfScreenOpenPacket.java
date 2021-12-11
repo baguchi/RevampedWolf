@@ -1,38 +1,32 @@
 package baguchan.revampedwolf.network;
 
-import baguchan.revampedwolf.api.IHasInventory;
-import baguchan.revampedwolf.client.screen.WolfInventoryScreen;
-import baguchan.revampedwolf.inventory.WolfInventoryMenu;
+import baguchan.revampedwolf.client.ClientPacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Wolf;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
 public class ClientWolfScreenOpenPacket {
 	private final int containerId;
-	private final int size;
 	private final int entityId;
 
-	public ClientWolfScreenOpenPacket(int containerIdIn, int size, int entityIdIn) {
+	public ClientWolfScreenOpenPacket(int containerIdIn, int entityIdIn) {
 		this.containerId = containerIdIn;
-		this.size = size;
 		this.entityId = entityIdIn;
 	}
 
 	public static ClientWolfScreenOpenPacket read(FriendlyByteBuf buf) {
 		int containerId = buf.readUnsignedByte();
-		int size = buf.readVarInt();
 		int entityId = buf.readInt();
-		return new ClientWolfScreenOpenPacket(containerId, size, entityId);
+		return new ClientWolfScreenOpenPacket(containerId, entityId);
 	}
 
 	public static void write(ClientWolfScreenOpenPacket packet, FriendlyByteBuf buf) {
 		buf.writeByte(packet.containerId);
-		buf.writeVarInt(packet.size);
 		buf.writeInt(packet.entityId);
 	}
 
@@ -46,15 +40,12 @@ public class ClientWolfScreenOpenPacket {
 					}
 					if (entity instanceof Wolf) {
 						Wolf wolf = (Wolf) entity;
-						if (wolf instanceof IHasInventory) {
-							WolfInventoryMenu wolfInventoryContainer = new WolfInventoryMenu(packet.containerId, clientPlayer.getInventory(), ((IHasInventory) wolf).getContainer(), wolf);
-							clientPlayer.containerMenu = wolfInventoryContainer;
-							WolfInventoryScreen wolfInventoryScreen = new WolfInventoryScreen(wolfInventoryContainer, clientPlayer.getInventory(), wolf);
-							minecraft.setScreen(wolfInventoryScreen);
-						}
+
+						ClientPacketHandler.openWolfInventory(wolf, clientPlayer, packet.containerId);
 					}
 				}
 		);
 		ctx.get().setPacketHandled(true);
+
 	}
 }
