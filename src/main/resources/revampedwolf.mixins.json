@@ -9,8 +9,7 @@
     "server.ServerPlayerMixin"
   ],
   "client": [
-    "client.WolfModelMixin",
-    "client.WolfRendererMixin"
+    "client.WolfModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

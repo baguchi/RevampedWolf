@@ -2,8 +2,11 @@ package baguchan.revampedwolf.client;
 
 import baguchan.revampedwolf.RevampedWolf;
 import baguchan.revampedwolf.client.render.WolfArmorModel;
+import baguchan.revampedwolf.client.render.layer.WolfArmorLayer;
+import baguchan.revampedwolf.client.render.layer.WolfHeldItemLayer;
 import baguchan.revampedwolf.registry.ModItems;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.WolfRenderer;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,5 +31,15 @@ public class ClientRegistrar {
 	@SubscribeEvent
 	public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
 		event.registerLayerDefinition(ModModelLayers.WOLF_ARMOR, WolfArmorModel::createBodyLayer);
+	}
+
+	@SubscribeEvent
+	public static void registerEntityRenders(EntityRenderersEvent.AddLayers event) {
+		Minecraft.getInstance().getEntityRenderDispatcher().renderers.values().forEach(r -> {
+			if (r instanceof WolfRenderer) {
+				((WolfRenderer) r).addLayer(new WolfHeldItemLayer((WolfRenderer) r));
+				((WolfRenderer) r).addLayer(new WolfArmorLayer((WolfRenderer) r, event.getEntityModels()));
+			}
+		});
 	}
 }
