@@ -33,7 +33,7 @@ public class WolfArmorItem extends Item {
 	}
 
 	public int getEnchantmentValue() {
-		return 1;
+		return 5;
 	}
 
 	public WolfArmorItem(int defense, float toughness, float knockbackResistance, ResourceLocation texture, Item.Properties properties) {

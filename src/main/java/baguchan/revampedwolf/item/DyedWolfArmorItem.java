@@ -11,4 +11,9 @@ public class DyedWolfArmorItem extends WolfArmorItem implements DyeableLeatherIt
 	public DyedWolfArmorItem(int defense, float toughness, float knockbackResistance, ResourceLocation texture, Properties properties) {
 		super(defense, toughness, knockbackResistance, texture, properties);
 	}
+
+	public int getEnchantmentValue() {
+		return 10;
+	}
+
 }
