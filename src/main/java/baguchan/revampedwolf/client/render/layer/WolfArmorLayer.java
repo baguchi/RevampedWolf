@@ -50,7 +50,7 @@ public class WolfArmorLayer extends RenderLayer<Wolf, WolfModel<Wolf>> {
 					f2 = 1.0F;
 				}
 
-				VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(p_117033_, RenderType.armorCutoutNoCull(wolfarmor.getTexture()), true, itemstack.hasFoil());
+				VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(p_117033_, RenderType.armorCutoutNoCull(wolfarmor.getTexture()), false, itemstack.hasFoil());
 				this.model.renderToBuffer(p_117032_, vertexconsumer, p_117034_, OverlayTexture.NO_OVERLAY, f, f1, f2, 1.0F);
 			}
 		}
