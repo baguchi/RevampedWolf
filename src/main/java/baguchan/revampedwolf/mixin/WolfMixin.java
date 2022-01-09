@@ -44,7 +44,7 @@ import java.util.function.Predicate;
 public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHunt, IHunger, IHasArmor, IHasInventory, ContainerListener {
 	private static final UUID ARMOR_MODIFIER_UUID = UUID.fromString("556E1665-8B10-40C8-8F9D-CF9B1667F295");
 	private static final UUID TOUGHNESS_ARMOR_MODIFIER_UUID = UUID.fromString("db9bf914-5933-474e-a184-e73040fb0789");
-
+	private static final UUID KNOCKBACK_RESISTANCE_MODIFIER_UUID = UUID.fromString("7c036153-7d05-c9e5-2f29-c664ef413677");
 	private int huntCooldown;
 	private int eatTick;
 	private int hungerTick;
@@ -284,6 +284,16 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 					float i = ((WolfArmorItem) stack.getItem()).getToughness();
 					if (i != 0) {
 						toughness.addTransientModifier(new AttributeModifier(TOUGHNESS_ARMOR_MODIFIER_UUID, "Wolf Toughness armor bonus", i, AttributeModifier.Operation.ADDITION));
+					}
+				}
+
+				AttributeInstance knockback_resistance = this.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+				if (knockback_resistance != null) {
+					knockback_resistance.removeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID);
+
+					float i = ((WolfArmorItem) stack.getItem()).getToughness();
+					if (i != 0) {
+						knockback_resistance.addTransientModifier(new AttributeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID, "Wolf KnockBack Resistance bonus", i, AttributeModifier.Operation.ADDITION));
 					}
 				}
 			}
