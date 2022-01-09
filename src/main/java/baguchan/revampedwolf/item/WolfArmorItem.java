@@ -2,6 +2,9 @@ package baguchan.revampedwolf.item;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -17,6 +20,11 @@ public class WolfArmorItem extends Item {
 		this.toughness = 0;
 		this.knockbackResistance = 0;
 		this.texture = texture;
+	}
+
+	@Override
+	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+		return enchantment.category == EnchantmentCategory.ARMOR;
 	}
 
 	public WolfArmorItem(int defense, float toughness, float knockbackResistance, ResourceLocation texture, Item.Properties properties) {
