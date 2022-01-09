@@ -27,6 +27,11 @@ public class WolfArmorItem extends Item {
 		return enchantment.category == EnchantmentCategory.ARMOR;
 	}
 
+	@Override
+	public boolean isEnchantable(ItemStack p_41456_) {
+		return true;
+	}
+
 	public WolfArmorItem(int defense, float toughness, float knockbackResistance, ResourceLocation texture, Item.Properties properties) {
 		super(properties);
 		this.defense = defense;
