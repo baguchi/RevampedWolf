@@ -17,6 +17,7 @@ public class ModItems {
 	public static final Item GOLD_WOLF_ARMOR = new WolfArmorItem(10, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_gold.png"), (new Item.Properties()).stacksTo(1).tab(CreativeModeTab.TAB_MISC));
 	public static final Item IRON_WOLF_ARMOR = new WolfArmorItem(16, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_iron.png"), (new Item.Properties()).stacksTo(1).tab(CreativeModeTab.TAB_MISC));
 	public static final Item DIAMOND_WOLF_ARMOR = new WolfArmorItem(20, 5, 0, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_diamond.png"), (new Item.Properties()).stacksTo(1).tab(CreativeModeTab.TAB_MISC));
+	public static final Item NETHERITE_WOLF_ARMOR = new WolfArmorItem(20, 10, 4, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_netherite.png"), (new Item.Properties()).stacksTo(1).fireResistant().tab(CreativeModeTab.TAB_MISC));
 
 
 	public static void register(IForgeRegistry<Item> registry, Item item, String id) {
@@ -30,5 +31,6 @@ public class ModItems {
 		register(registry.getRegistry(), GOLD_WOLF_ARMOR, "golden_wolf_armor");
 		register(registry.getRegistry(), IRON_WOLF_ARMOR, "iron_wolf_armor");
 		register(registry.getRegistry(), DIAMOND_WOLF_ARMOR, "diamond_wolf_armor");
+		register(registry.getRegistry(), NETHERITE_WOLF_ARMOR, "netherite_wolf_armor");
 	}
 }
