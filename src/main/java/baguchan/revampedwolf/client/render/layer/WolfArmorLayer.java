@@ -10,6 +10,7 @@ import net.minecraft.client.model.WolfModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -49,7 +50,7 @@ public class WolfArmorLayer extends RenderLayer<Wolf, WolfModel<Wolf>> {
 					f2 = 1.0F;
 				}
 
-				VertexConsumer vertexconsumer = p_117033_.getBuffer(RenderType.entityCutoutNoCull(wolfarmor.getTexture()));
+				VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(p_117033_, RenderType.entityCutoutNoCull(wolfarmor.getTexture()), false, itemstack.hasFoil());
 				this.model.renderToBuffer(p_117032_, vertexconsumer, p_117034_, OverlayTexture.NO_OVERLAY, f, f1, f2, 1.0F);
 			}
 		}

@@ -24,7 +24,7 @@ public class WolfArmorItem extends Item {
 
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-		return enchantment.category == EnchantmentCategory.ARMOR;
+		return enchantment.category == EnchantmentCategory.ARMOR || enchantment.category == EnchantmentCategory.ARMOR_CHEST;
 	}
 
 	@Override
