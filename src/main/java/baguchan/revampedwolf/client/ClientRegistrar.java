@@ -21,7 +21,7 @@ public class ClientRegistrar {
 	public static void renderItemColor() {
 		Minecraft.getInstance().getItemColors().register((p_92708_, p_92709_) -> {
 			return p_92709_ > 0 ? -1 : ((DyeableLeatherItem) p_92708_.getItem()).getColor(p_92708_);
-		}, ModItems.LEATHER_WOLF_ARMOR);
+		}, ModItems.LEATHER_WOLF_ARMOR.get());
 	}
 
 	public static void setup(FMLCommonSetupEvent event) {

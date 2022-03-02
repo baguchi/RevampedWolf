@@ -2,9 +2,11 @@ package baguchan.revampedwolf;
 
 import baguchan.revampedwolf.client.ClientRegistrar;
 import baguchan.revampedwolf.network.ClientWolfScreenOpenPacket;
+import baguchan.revampedwolf.registry.ModItems;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -39,6 +41,9 @@ public class RevampedWolf {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         // Register the processIMC method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
+
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModItems.ITEM_REGISTRY.register(bus);
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientRegistrar::setup));
         // Register ourselves for server and other game events we are interested in

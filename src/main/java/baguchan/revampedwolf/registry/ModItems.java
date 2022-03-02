@@ -6,31 +6,16 @@ import baguchan.revampedwolf.item.WolfArmorItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
-@Mod.EventBusSubscriber(modid = RevampedWolf.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModItems {
-	public static final Item LEATHER_WOLF_ARMOR = new DyedWolfArmorItem(5, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_leather.png"), (new Item.Properties()).stacksTo(1).tab(CreativeModeTab.TAB_MISC));
-	public static final Item GOLD_WOLF_ARMOR = new WolfArmorItem(10, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_gold.png"), (new Item.Properties()).stacksTo(1).tab(CreativeModeTab.TAB_MISC));
-	public static final Item IRON_WOLF_ARMOR = new WolfArmorItem(16, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_iron.png"), (new Item.Properties()).stacksTo(1).tab(CreativeModeTab.TAB_MISC));
-	public static final Item DIAMOND_WOLF_ARMOR = new WolfArmorItem(20, 5, 0, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_diamond.png"), (new Item.Properties()).stacksTo(1).tab(CreativeModeTab.TAB_MISC));
-	public static final Item NETHERITE_WOLF_ARMOR = new WolfArmorItem(20, 10, 4, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_netherite.png"), (new Item.Properties()).stacksTo(1).fireResistant().tab(CreativeModeTab.TAB_MISC));
+	public static final DeferredRegister<Item> ITEM_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, RevampedWolf.MODID);
 
-
-	public static void register(IForgeRegistry<Item> registry, Item item, String id) {
-		item.setRegistryName(new ResourceLocation(RevampedWolf.MODID, id));
-		registry.register(item);
-	}
-
-	@SubscribeEvent
-	public static void registerItems(RegistryEvent.Register<Item> registry) {
-		register(registry.getRegistry(), LEATHER_WOLF_ARMOR, "leather_wolf_armor");
-		register(registry.getRegistry(), GOLD_WOLF_ARMOR, "golden_wolf_armor");
-		register(registry.getRegistry(), IRON_WOLF_ARMOR, "iron_wolf_armor");
-		register(registry.getRegistry(), DIAMOND_WOLF_ARMOR, "diamond_wolf_armor");
-		register(registry.getRegistry(), NETHERITE_WOLF_ARMOR, "netherite_wolf_armor");
-	}
+	public static final RegistryObject<Item> LEATHER_WOLF_ARMOR = ITEM_REGISTRY.register("leather_wolf_armor", () -> new DyedWolfArmorItem(5, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_leather.png"), (new Item.Properties()).stacksTo(1).tab(CreativeModeTab.TAB_MISC)));
+	public static final RegistryObject<Item> GOLD_WOLF_ARMOR = ITEM_REGISTRY.register("golden_wolf_armor", () -> new WolfArmorItem(10, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_gold.png"), (new Item.Properties()).stacksTo(1).tab(CreativeModeTab.TAB_MISC)));
+	public static final RegistryObject<Item> IRON_WOLF_ARMOR = ITEM_REGISTRY.register("iron_wolf_armor", () -> new WolfArmorItem(16, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_iron.png"), (new Item.Properties()).stacksTo(1).tab(CreativeModeTab.TAB_MISC)));
+	public static final RegistryObject<Item> DIAMOND_WOLF_ARMOR = ITEM_REGISTRY.register("diamond_wolf_armor", () -> new WolfArmorItem(20, 5, 0, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_diamond.png"), (new Item.Properties()).stacksTo(1).tab(CreativeModeTab.TAB_MISC)));
+	public static final RegistryObject<Item> NETHERITE_WOLF_ARMOR = ITEM_REGISTRY.register("netherite_wolf_armor", () -> new WolfArmorItem(20, 10, 4, new ResourceLocation(RevampedWolf.MODID, "textures/entity/wolf/armor/wolf_armor_netherite.png"), (new Item.Properties()).stacksTo(1).fireResistant().tab(CreativeModeTab.TAB_MISC)));
 }
