@@ -41,7 +41,7 @@ public class WolfHeldItemLayer extends RenderLayer<Wolf, WolfModel<Wolf>> {
 			p_117007_.mulPose(Vector3f.XP.rotationDegrees(90.0F));
 
 			ItemStack itemstack = p_117010_.getItemBySlot(EquipmentSlot.MAINHAND);
-			Minecraft.getInstance().getItemInHandRenderer().renderItem(p_117010_, itemstack, ItemTransforms.TransformType.GROUND, false, p_117007_, p_117008_, p_117009_);
+			Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer().renderItem(p_117010_, itemstack, ItemTransforms.TransformType.GROUND, false, p_117007_, p_117008_, p_117009_);
 			p_117007_.popPose();
 		}
 	}

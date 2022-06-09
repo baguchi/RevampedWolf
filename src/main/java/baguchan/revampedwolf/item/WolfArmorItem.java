@@ -14,7 +14,7 @@ public class WolfArmorItem extends Item {
 	protected final float knockbackResistance;
 	private final ResourceLocation texture;
 
-	public WolfArmorItem(int defense, ResourceLocation texture, Item.Properties properties) {
+	public WolfArmorItem(int defense, ResourceLocation texture, Properties properties) {
 		super(properties);
 		this.defense = defense;
 		this.toughness = 0;
@@ -36,7 +36,7 @@ public class WolfArmorItem extends Item {
 		return 5;
 	}
 
-	public WolfArmorItem(int defense, float toughness, float knockbackResistance, ResourceLocation texture, Item.Properties properties) {
+	public WolfArmorItem(int defense, float toughness, float knockbackResistance, ResourceLocation texture, Properties properties) {
 		super(properties);
 		this.defense = defense;
 		this.toughness = toughness;

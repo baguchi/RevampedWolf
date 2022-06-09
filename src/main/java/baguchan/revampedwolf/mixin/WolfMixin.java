@@ -98,7 +98,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		if (p_30412_.isSecondaryUseActive() && this.isTame() && this.isOwnedBy(p_30412_)) {
 			if (p_30412_ instanceof IOpenWolfContainer) {
 				this.openInventory(p_30412_);
-				this.gameEvent(GameEvent.MOB_INTERACT, this.eyeBlockPosition());
+				this.gameEvent(GameEvent.ENTITY_INTERACT);
 				callbackInfo.setReturnValue(InteractionResult.SUCCESS);
 			}
 		}
@@ -218,9 +218,9 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	}
 
 	@Override
-	public void killed(ServerLevel p_241847_1_, LivingEntity p_241847_2_) {
-		super.killed(p_241847_1_, p_241847_2_);
+	public boolean wasKilled(ServerLevel p_216988_, LivingEntity p_216989_) {
 		this.setHuntCooldown(1200);
+		return super.wasKilled(p_216988_, p_216989_);
 	}
 
 	protected void createInventory() {
