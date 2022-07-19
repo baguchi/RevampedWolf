@@ -54,7 +54,7 @@ public class RevampedWolf {
     private void setupMessage() {
         CHANNEL.messageBuilder(ClientWolfScreenOpenPacket.class, 0, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(ClientWolfScreenOpenPacket::write).decoder(ClientWolfScreenOpenPacket::read)
-                .consumer(ClientWolfScreenOpenPacket::handle)
+                .consumerMainThread(ClientWolfScreenOpenPacket::handle)
                 .add();
     }
 
