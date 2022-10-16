@@ -1,6 +1,11 @@
 package baguchan.revampedwolf.mixin;
 
-import baguchan.revampedwolf.api.*;
+import baguchan.revampedwolf.WolfConfigs;
+import baguchan.revampedwolf.api.IHasArmor;
+import baguchan.revampedwolf.api.IHasInventory;
+import baguchan.revampedwolf.api.IHunger;
+import baguchan.revampedwolf.api.IHunt;
+import baguchan.revampedwolf.api.IOpenWolfContainer;
 import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
 import baguchan.revampedwolf.entity.goal.MoveToMeatGoal;
 import baguchan.revampedwolf.entity.goal.WolfAvoidEntityGoal;
@@ -9,13 +14,36 @@ import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.*;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerListener;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.*;
+import net.minecraft.world.entity.ai.goal.BegGoal;
+import net.minecraft.world.entity.ai.goal.BreedGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
+import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NonTameRandomTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.Wolf;
@@ -62,7 +90,9 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	@Inject(method = "<init>", at = @At("TAIL"))
 	public void onConstructor(EntityType<? extends Wolf> p_27557_, Level p_27558_, CallbackInfo info) {
 		this.setCanPickUpLoot(true);
-		this.createInventory();
+		if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
+			this.createInventory();
+		}
 	}
 
 	@Inject(method = "registerGoals", at = @At("HEAD"), cancellable = true)
@@ -95,11 +125,13 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	public void mobInteract(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> callbackInfo) {
 		ItemStack itemstack = p_30412_.getItemInHand(p_30413_);
 		Item item = itemstack.getItem();
-		if (p_30412_.isSecondaryUseActive() && this.isTame() && this.isOwnedBy(p_30412_)) {
-			if (p_30412_ instanceof IOpenWolfContainer) {
-				this.openInventory(p_30412_);
-				this.gameEvent(GameEvent.ENTITY_INTERACT);
-				callbackInfo.setReturnValue(InteractionResult.SUCCESS);
+		if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
+			if (p_30412_.isSecondaryUseActive() && this.isTame() && this.isOwnedBy(p_30412_)) {
+				if (p_30412_ instanceof IOpenWolfContainer) {
+					this.openInventory(p_30412_);
+					this.gameEvent(GameEvent.ENTITY_INTERACT);
+					callbackInfo.setReturnValue(InteractionResult.SUCCESS);
+				}
 			}
 		}
 	}
@@ -197,8 +229,10 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		p_213281_1_.putInt("EatTick", this.eatTick);
 		p_213281_1_.putInt("HungerTick", this.hungerTick);
 
-		if (!this.inventory.getItem(0).isEmpty()) {
-			p_213281_1_.put("ArmorItem", this.inventory.getItem(0).save(new CompoundTag()));
+		if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
+			if (!this.inventory.getItem(0).isEmpty()) {
+				p_213281_1_.put("ArmorItem", this.inventory.getItem(0).save(new CompoundTag()));
+			}
 		}
 	}
 
@@ -207,10 +241,12 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		this.huntCooldown = p_70037_1_.getInt("HuntingCooldown");
 		this.eatTick = p_70037_1_.getInt("EatTick");
 		this.hungerTick = p_70037_1_.getInt("HungerTick");
-		if (p_70037_1_.contains("ArmorItem", 10)) {
-			ItemStack itemstack = ItemStack.of(p_70037_1_.getCompound("ArmorItem"));
-			if (!itemstack.isEmpty() && this.isArmor(itemstack)) {
-				this.inventory.setItem(0, itemstack);
+		if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
+			if (p_70037_1_.contains("ArmorItem", 10)) {
+				ItemStack itemstack = ItemStack.of(p_70037_1_.getCompound("ArmorItem"));
+				if (!itemstack.isEmpty() && this.isArmor(itemstack)) {
+					this.inventory.setItem(0, itemstack);
+				}
 			}
 		}
 		this.updateContainerEquipment();
@@ -261,47 +297,53 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	}
 
 	private void updateContainerEquipment() {
-		if (!this.level.isClientSide) {
-			this.setItemSlot(EquipmentSlot.CHEST, this.inventory.getItem(0));
-			this.setDropChance(EquipmentSlot.CHEST, 0.0F);
+		if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
+			if (!this.level.isClientSide) {
+				this.setItemSlot(EquipmentSlot.CHEST, this.inventory.getItem(0));
+				this.setDropChance(EquipmentSlot.CHEST, 0.0F);
 
-			ItemStack stack = this.inventory.getItem(0);
-			AttributeInstance armor = this.getAttribute(Attributes.ARMOR);
-			if (this.isArmor(stack)) {
-				if (armor != null) {
-					armor.removeModifier(ARMOR_MODIFIER_UUID);
-					int i = ((WolfArmorItem) stack.getItem()).getDefense();
-					if (i != 0) {
-						armor.addTransientModifier(new AttributeModifier(ARMOR_MODIFIER_UUID, "Wolf armor bonus", i, AttributeModifier.Operation.ADDITION));
+				ItemStack stack = this.inventory.getItem(0);
+				AttributeInstance armor = this.getAttribute(Attributes.ARMOR);
+				if (this.isArmor(stack)) {
+					if (armor != null) {
+						armor.removeModifier(ARMOR_MODIFIER_UUID);
+						int i = ((WolfArmorItem) stack.getItem()).getDefense();
+						if (i != 0) {
+							armor.addTransientModifier(new AttributeModifier(ARMOR_MODIFIER_UUID, "Wolf armor bonus", i, AttributeModifier.Operation.ADDITION));
+						}
+
 					}
 
-				}
+					AttributeInstance toughness = this.getAttribute(Attributes.ARMOR_TOUGHNESS);
+					if (toughness != null) {
+						toughness.removeModifier(TOUGHNESS_ARMOR_MODIFIER_UUID);
 
-				AttributeInstance toughness = this.getAttribute(Attributes.ARMOR_TOUGHNESS);
-				if (toughness != null) {
-					toughness.removeModifier(TOUGHNESS_ARMOR_MODIFIER_UUID);
+						float i = ((WolfArmorItem) stack.getItem()).getToughness();
+						if (i != 0) {
+							toughness.addTransientModifier(new AttributeModifier(TOUGHNESS_ARMOR_MODIFIER_UUID, "Wolf Toughness armor bonus", i, AttributeModifier.Operation.ADDITION));
+						}
+					}
 
-					float i = ((WolfArmorItem) stack.getItem()).getToughness();
-					if (i != 0) {
-						toughness.addTransientModifier(new AttributeModifier(TOUGHNESS_ARMOR_MODIFIER_UUID, "Wolf Toughness armor bonus", i, AttributeModifier.Operation.ADDITION));
+					AttributeInstance knockback_resistance = this.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+					if (knockback_resistance != null) {
+						knockback_resistance.removeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID);
+
+						float i = ((WolfArmorItem) stack.getItem()).getToughness();
+						if (i != 0) {
+							knockback_resistance.addTransientModifier(new AttributeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID, "Wolf KnockBack Resistance bonus", i, AttributeModifier.Operation.ADDITION));
+						}
 					}
 				}
 
-				AttributeInstance knockback_resistance = this.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
-				if (knockback_resistance != null) {
-					knockback_resistance.removeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID);
-
-					float i = ((WolfArmorItem) stack.getItem()).getToughness();
-					if (i != 0) {
-						knockback_resistance.addTransientModifier(new AttributeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID, "Wolf KnockBack Resistance bonus", i, AttributeModifier.Operation.ADDITION));
-					}
-				}
 			}
-
 		}
 	}
 
 	public SlotAccess getSlot(int p_149743_) {
+		if (WolfConfigs.COMMON.disableWolfArmor.get()) {
+			return super.getSlot(p_149743_);
+		}
+
 		int i = p_149743_ - 300;
 		return i >= 0 && i < this.inventory.getContainerSize() ? SlotAccess.forContainer(this.inventory, i) : super.getSlot(p_149743_);
 	}
@@ -369,6 +411,10 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	}
 
 	public ItemStack getItemBySlot(EquipmentSlot p_21467_) {
+		if (WolfConfigs.COMMON.disableWolfArmor.get()) {
+			return super.getItemBySlot(p_21467_);
+		}
+
 		switch (p_21467_.getType()) {
 			case ARMOR:
 				return this.inventory.getItem(0);
@@ -384,7 +430,9 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 				super.setItemSlot(p_21416_, p_21417_);
 				break;
 			case ARMOR:
-				this.inventory.setItem(0, p_21417_);
+				if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
+					this.inventory.setItem(0, p_21417_);
+				}
 		}
 	}
 

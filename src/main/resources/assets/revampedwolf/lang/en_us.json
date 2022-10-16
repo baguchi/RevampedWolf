@@ -4,5 +4,6 @@
   "item.revampedwolf.golden_wolf_armor": "Golden Wolf Armor",
   "item.revampedwolf.diamond_wolf_armor": "Diamond Wolf Armor",
   "item.revampedwolf.netherite_wolf_armor": "Netherite Wolf Armor",
-  "item.revampedwolf.bagu_hat": "Bagu Hat"
+  "item.revampedwolf.bagu_hat": "Bagu Hat",
+  "revampedwolf.config.disableArmor": "Disable Armor"
 }
