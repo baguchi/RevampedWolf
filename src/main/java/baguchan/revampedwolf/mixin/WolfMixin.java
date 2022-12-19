@@ -6,24 +6,34 @@ import baguchan.revampedwolf.api.IHasInventory;
 import baguchan.revampedwolf.api.IHunger;
 import baguchan.revampedwolf.api.IHunt;
 import baguchan.revampedwolf.api.IOpenWolfContainer;
+import baguchan.revampedwolf.api.IWolfTypes;
+import baguchan.revampedwolf.api.WolfGroupData;
+import baguchan.revampedwolf.api.WolfTypes;
 import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
 import baguchan.revampedwolf.entity.goal.MoveToMeatGoal;
 import baguchan.revampedwolf.entity.goal.WolfAvoidEntityGoal;
 import baguchan.revampedwolf.item.WolfArmorItem;
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerListener;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -55,6 +65,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.spongepowered.asm.mixin.Final;
@@ -70,7 +81,11 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 @Mixin(Wolf.class)
-public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHunt, IHunger, IHasArmor, IHasInventory, ContainerListener {
+public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHunt, IHunger, IHasArmor, IHasInventory, IWolfTypes, ContainerListener {
+
+	private static final EntityDataAccessor<String> DATA_TYPE = SynchedEntityData.defineId(Wolf.class, EntityDataSerializers.STRING);
+
+
 	private static final UUID ARMOR_MODIFIER_UUID = UUID.fromString("556E1665-8B10-40C8-8F9D-CF9B1667F295");
 	private static final UUID TOUGHNESS_ARMOR_MODIFIER_UUID = UUID.fromString("db9bf914-5933-474e-a184-e73040fb0789");
 	private static final UUID KNOCKBACK_RESISTANCE_MODIFIER_UUID = UUID.fromString("7c036153-7d05-c9e5-2f29-c664ef413677");
@@ -94,6 +109,11 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
 			this.createInventory();
 		}
+	}
+
+	@Inject(method = "defineSynchedData", at = @At("TAIL"))
+	protected void defineSynchedData(CallbackInfo callbackInfo) {
+		this.entityData.define(DATA_TYPE, WolfTypes.WHITE.type);
 	}
 
 	@Inject(method = "registerGoals", at = @At("HEAD"), cancellable = true)
@@ -226,6 +246,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	@Inject(method = "addAdditionalSaveData", at = @At("TAIL"), cancellable = true)
 	public void addAdditionalSaveData(CompoundTag p_213281_1_, CallbackInfo callbackInfo) {
+		p_213281_1_.putString("Type", this.getVariant().getSerializedName());
 		p_213281_1_.putInt("HuntingCooldown", this.huntCooldown);
 		p_213281_1_.putInt("EatTick", this.eatTick);
 		p_213281_1_.putInt("HungerTick", this.hungerTick);
@@ -239,6 +260,8 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	@Inject(method = "readAdditionalSaveData", at = @At("TAIL"), cancellable = true)
 	public void readAdditionalSaveData(CompoundTag p_70037_1_, CallbackInfo callbackInfo) {
+		this.setVariant(WolfTypes.byType(p_70037_1_.getString("Type")));
+
 		this.huntCooldown = p_70037_1_.getInt("HuntingCooldown");
 		this.eatTick = p_70037_1_.getInt("EatTick");
 		this.hungerTick = p_70037_1_.getInt("HungerTick");
@@ -252,6 +275,29 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		}
 		this.updateContainerEquipment();
 		this.setCanPickUpLoot(true);
+	}
+
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_146746_, DifficultyInstance p_146747_, MobSpawnType p_146748_, @org.jetbrains.annotations.Nullable SpawnGroupData p_146749_, @org.jetbrains.annotations.Nullable CompoundTag p_146750_) {
+		WolfTypes type = WolfTypes.values()[p_146746_.getRandom().nextInt(WolfTypes.values().length)];
+		boolean flag = false;
+		if (p_146749_ instanceof WolfGroupData groupdata) {
+			type = groupdata.type;
+			if (groupdata.getGroupSize() >= 2) {
+				flag = true;
+			}
+		} else {
+			p_146749_ = new WolfGroupData(type);
+		}
+
+		if (flag) {
+			this.setAge(-24000);
+		}
+
+		this.setVariant(type);
+
+
+		return super.finalizeSpawn(p_146746_, p_146747_, p_146748_, p_146749_, p_146750_);
 	}
 
 	@Override
@@ -304,8 +350,8 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 				this.setDropChance(EquipmentSlot.CHEST, 0.0F);
 
 				ItemStack stack = this.inventory.getItem(0);
-				AttributeInstance armor = this.getAttribute(Attributes.ARMOR);
 				if (this.isArmor(stack)) {
+					AttributeInstance armor = this.getAttribute(Attributes.ARMOR);
 					if (armor != null) {
 						armor.removeModifier(ARMOR_MODIFIER_UUID);
 						int i = ((WolfArmorItem) stack.getItem()).getDefense();
@@ -432,6 +478,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 				break;
 			case ARMOR:
 				if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
+
 					this.inventory.setItem(0, p_21417_);
 				}
 		}
@@ -454,5 +501,30 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 			this.playSound(SoundEvents.ARMOR_EQUIP_GENERIC, 1.0F, 1.0F);
 			this.updateContainerEquipment();
 		}
+	}
+
+	public void setVariant(WolfTypes p_28929_) {
+		this.entityData.set(DATA_TYPE, p_28929_.type);
+	}
+
+
+	public WolfTypes getVariant() {
+		return WolfTypes.byType(this.entityData.get(DATA_TYPE));
+	}
+
+	@Inject(method = ("getBreedOffspring"), at = @At("RETURN"))
+	public Wolf getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_, CallbackInfoReturnable<Wolf> ci) {
+		Wolf wolf = ci.getReturnValue();
+		((IWolfTypes) wolf).setVariant(getOffspringType((Wolf) p_146744_));
+		return wolf;
+	}
+
+	private WolfTypes getOffspringType(Wolf p_28931_) {
+		WolfTypes type = this.getVariant();
+		WolfTypes type1 = ((IWolfTypes) p_28931_).getVariant();
+		WolfTypes type2 = this.random.nextBoolean() ? type : type1;
+
+
+		return type2;
 	}
 }
