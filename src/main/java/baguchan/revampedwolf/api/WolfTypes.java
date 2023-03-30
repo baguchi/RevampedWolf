@@ -21,6 +21,6 @@ public enum WolfTypes implements StringRepresentable {
 	}
 
 	public static WolfTypes byType(String p_28977_) {
-		return CODEC.byName(p_28977_, WHITE);
+		return CODEC.byName(p_28977_);
 	}
 }

@@ -5,17 +5,20 @@ import baguchan.revampedwolf.api.IOpenWolfContainer;
 import baguchan.revampedwolf.inventory.WolfInventoryMenu;
 import baguchan.revampedwolf.network.ClientWolfScreenOpenPacket;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.ProfilePublicKey;
 import net.minecraft.world.inventory.ContainerListener;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+
+import javax.annotation.Nullable;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player implements IOpenWolfContainer {
@@ -26,8 +29,8 @@ public abstract class ServerPlayerMixin extends Player implements IOpenWolfConta
     @Final
     private ContainerListener containerListener;
 
-    public ServerPlayerMixin(Level p_219727_, BlockPos p_219728_, float p_219729_, GameProfile p_219730_) {
-        super(p_219727_, p_219728_, p_219729_, p_219730_);
+    public ServerPlayerMixin(MinecraftServer p_215088_, ServerLevel p_215089_, GameProfile p_215090_, @Nullable ProfilePublicKey p_215091_) {
+        super(p_215089_, p_215089_.getSharedSpawnPos(), p_215089_.getSharedSpawnAngle(), p_215090_, p_215091_);
     }
 
 

@@ -35,7 +35,7 @@ public class WolfInventoryScreen extends AbstractContainerScreen<WolfInventoryMe
 		int j = (this.height - this.imageHeight) / 2;
 		this.blit(p_98821_, i, j, 0, 0, this.imageWidth, this.imageHeight);
 
-		InventoryScreen.renderEntityInInventoryFollowsMouse(p_98821_, i + 51, j + 60, 17, (float) (i + 51) - this.xMouse, (float) (j + 75 - 50) - this.yMouse, this.wolf);
+		InventoryScreen.renderEntityInInventory(i + 51, j + 60, 17, (float) (i + 51) - this.xMouse, (float) (j + 75 - 50) - this.yMouse, this.wolf);
 	}
 
 	public void render(PoseStack p_98826_, int p_98827_, int p_98828_, float p_98829_) {
