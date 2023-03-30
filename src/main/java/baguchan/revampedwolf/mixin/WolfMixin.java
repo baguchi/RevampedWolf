@@ -326,7 +326,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	private void updateContainerEquipment() {
 		if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
 			if (!this.level.isClientSide) {
-				this.setItemSlot(EquipmentSlot.CHEST, this.inventory.getItem(0));
 				this.setDropChance(EquipmentSlot.CHEST, 0.0F);
 
 				ItemStack stack = this.inventory.getItem(0);
@@ -475,11 +474,10 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	@Override
 	public void containerChanged(Container p_18983_) {
+		this.updateContainerEquipment();
 		ItemStack itemstack = this.getArmor();
-		ItemStack itemstack1 = this.getArmor();
-		if (this.tickCount > 20 && this.isArmor(itemstack1) && itemstack != itemstack1) {
+		if (this.tickCount > 20 && this.isArmor(itemstack)) {
 			this.playSound(SoundEvents.ARMOR_EQUIP_GENERIC, 1.0F, 1.0F);
-			this.updateContainerEquipment();
 		}
 	}
 
