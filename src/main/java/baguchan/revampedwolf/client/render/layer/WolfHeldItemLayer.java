@@ -6,11 +6,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.WolfModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -41,7 +41,7 @@ public class WolfHeldItemLayer extends RenderLayer<Wolf, WolfModel<Wolf>> {
 			p_117007_.mulPose(Axis.XP.rotationDegrees(90.0F));
 
 			ItemStack itemstack = p_117010_.getItemBySlot(EquipmentSlot.MAINHAND);
-			Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer().renderItem(p_117010_, itemstack, ItemTransforms.TransformType.GROUND, false, p_117007_, p_117008_, p_117009_);
+			Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer().renderItem(p_117010_, itemstack, ItemDisplayContext.GROUND, false, p_117007_, p_117008_, p_117009_);
 			p_117007_.popPose();
 		}
 	}

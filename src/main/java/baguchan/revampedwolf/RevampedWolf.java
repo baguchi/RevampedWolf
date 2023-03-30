@@ -1,7 +1,6 @@
 package baguchan.revampedwolf;
 
 import baguchan.revampedwolf.client.ClientRegistrar;
-import baguchan.revampedwolf.network.ClientWolfScreenOpenPacket;
 import baguchan.revampedwolf.registry.ModItems;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,7 +14,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
@@ -56,10 +54,6 @@ public class RevampedWolf {
 
 
     private void setupMessage() {
-        CHANNEL.messageBuilder(ClientWolfScreenOpenPacket.class, 0, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(ClientWolfScreenOpenPacket::write).decoder(ClientWolfScreenOpenPacket::read)
-                .consumerMainThread(ClientWolfScreenOpenPacket::handle)
-                .add();
     }
 
     private void setup(final FMLCommonSetupEvent event) {
