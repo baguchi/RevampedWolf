@@ -1,5 +1,6 @@
 package baguchan.revampedwolf.mixin;
 
+import baguchan.revampedwolf.RevampedWolf;
 import baguchan.revampedwolf.WolfConfigs;
 import baguchan.revampedwolf.api.*;
 import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
@@ -7,9 +8,9 @@ import baguchan.revampedwolf.entity.goal.MoveToMeatGoal;
 import baguchan.revampedwolf.entity.goal.WolfAvoidEntityGoal;
 import baguchan.revampedwolf.inventory.WolfInventoryMenu;
 import baguchan.revampedwolf.item.WolfArmorItem;
+import baguchan.revampedwolf.network.ClientWolfScreenOpenPacket;
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -29,17 +30,17 @@ import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -133,17 +134,14 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		Wolf wolf = (Wolf) ((Object) this);
 		if (!this.level.isClientSide
 				&& player instanceof IOpenWolfContainer) {
-			NetworkHooks.openScreen((ServerPlayer) player, new MenuProvider() {
-				@Override
-				public AbstractContainerMenu createMenu(int p_createMenu_1_, Inventory p_createMenu_2_, Player p_createMenu_3_) {
-					return new WolfInventoryMenu(p_createMenu_1_, p_createMenu_2_, inventory, wolf);
-				}
+			ServerPlayer sp = (ServerPlayer) player;
+			if (sp.containerMenu != sp.inventoryMenu) sp.closeContainer();
 
-				@Override
-				public Component getDisplayName() {
-					return WolfMixin.this.getDisplayName();
-				}
-			});
+			sp.nextContainerCounter();
+			RevampedWolf.CHANNEL.send(PacketDistributor.PLAYER.with(() -> sp), new ClientWolfScreenOpenPacket(sp.containerCounter, this.getId()));
+			sp.containerMenu = new WolfInventoryMenu(sp.containerCounter, sp.getInventory(), this.inventory, wolf);
+			sp.initMenu(sp.containerMenu);
+			MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(sp, sp.containerMenu));
 		}
 	}
 
