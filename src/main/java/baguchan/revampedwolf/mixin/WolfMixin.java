@@ -35,7 +35,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -255,29 +254,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		}
 		this.updateContainerEquipment();
 		this.setCanPickUpLoot(true);
-	}
-
-	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_146746_, DifficultyInstance p_146747_, MobSpawnType p_146748_, @org.jetbrains.annotations.Nullable SpawnGroupData p_146749_, @org.jetbrains.annotations.Nullable CompoundTag p_146750_) {
-		WolfTypes type = WolfTypes.values()[p_146746_.getRandom().nextInt(WolfTypes.values().length)];
-		boolean flag = false;
-		if (p_146749_ instanceof WolfGroupData groupdata) {
-			type = groupdata.type;
-			if (groupdata.getGroupSize() >= 2) {
-				flag = true;
-			}
-		} else {
-			p_146749_ = new WolfGroupData(type);
-		}
-
-		if (flag) {
-			this.setAge(-24000);
-		}
-
-		this.setVariant(type);
-
-
-		return super.finalizeSpawn(p_146746_, p_146747_, p_146748_, p_146749_, p_146750_);
 	}
 
 	@Override

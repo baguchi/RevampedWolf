@@ -20,7 +20,7 @@ mixin {
     add sourceSets.main, "revampedwolf.refmap.json"
 }
 
-version = '1.19.4-4.0.0'
+version = '1.19.4-4.1.0'
 group = 'baguchan.revampedwolf' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'revampedwolf'
 
@@ -139,7 +139,7 @@ dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.19.4-45.0.29'
+    minecraft 'net.minecraftforge:forge:1.19.4-45.0.40'
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
