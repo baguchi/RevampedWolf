@@ -1,9 +1,9 @@
 {
-  "item.revampedwolf.leather_wolf_armor": "Шкіряна броня вовка",
-  "item.revampedwolf.iron_wolf_armor": "Броня Залізного Вовка",
-  "item.revampedwolf.golden_wolf_armor": "Броня золотого вовка",
-  "item.revampedwolf.diamond_wolf_armor": "Алмазна броня вовка",
-  "item.revampedwolf.netherite_wolf_armor": "Нетеритова вовча броня",
-  "item.revampedwolf.bagu_hat": "Капелюх багу",
-  "revampedwolf.config.disableArmor": "Вимкнути броню"
+  "item.revampedwolf.leather_wolf_armor": "Шкіряні вовчі обладунки",
+  "item.revampedwolf.iron_wolf_armor": "Залізні вовчі обладунки",
+  "item.revampedwolf.golden_wolf_armor": "Золоті вовчі обладунки",
+  "item.revampedwolf.diamond_wolf_armor": "Діамантові вовчі обладунки",
+  "item.revampedwolf.netherite_wolf_armor": "Незеритові вовчі обладунки",
+  "item.revampedwolf.bagu_hat": "Баґу капелюх",
+  "revampedwolf.config.disableArmor": "Вимкнути обладунки"
 }
