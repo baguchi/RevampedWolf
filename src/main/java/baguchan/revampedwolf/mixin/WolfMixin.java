@@ -131,7 +131,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	public void openInventory(Player player) {
 		Wolf wolf = (Wolf) ((Object) this);
-		if (!this.level.isClientSide
+		if (!this.level().isClientSide
 				&& player instanceof IOpenWolfContainer) {
 			ServerPlayer sp = (ServerPlayer) player;
 			if (sp.containerMenu != sp.inventoryMenu) sp.closeContainer();
@@ -146,7 +146,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	@Inject(method = "aiStep", at = @At("HEAD"), cancellable = true)
 	public void aiStep(CallbackInfo callbackInfo) {
-		if (!this.level.isClientSide && this.isAlive()) {
+		if (!this.level().isClientSide && this.isAlive()) {
 			if (this.hungerTick > 0) {
 				this.hungerTick--;
 			}
@@ -182,18 +182,18 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	}
 
 	private void spitOutItem(ItemStack p_28602_) {
-		if (!p_28602_.isEmpty() && !this.level.isClientSide) {
-			ItemEntity itementity = new ItemEntity(this.level, this.getX() + this.getLookAngle().x, this.getY() + 1.0D, this.getZ() + this.getLookAngle().z, p_28602_);
+		if (!p_28602_.isEmpty() && !this.level().isClientSide) {
+			ItemEntity itementity = new ItemEntity(this.level(), this.getX() + this.getLookAngle().x, this.getY() + 1.0D, this.getZ() + this.getLookAngle().z, p_28602_);
 			itementity.setPickUpDelay(40);
 			itementity.setThrower(this.getUUID());
 			this.playSound(SoundEvents.FOX_SPIT, 1.0F, 1.0F);
-			this.level.addFreshEntity(itementity);
+			this.level().addFreshEntity(itementity);
 		}
 	}
 
 	private void dropItemStack(ItemStack p_28606_) {
-		ItemEntity itementity = new ItemEntity(this.level, this.getX(), this.getY(), this.getZ(), p_28606_);
-		this.level.addFreshEntity(itementity);
+		ItemEntity itementity = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), p_28606_);
+		this.level().addFreshEntity(itementity);
 	}
 
 	public boolean canHoldItem(ItemStack p_28578_) {
@@ -257,9 +257,9 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	}
 
 	@Override
-	public boolean wasKilled(ServerLevel p_216988_, LivingEntity p_216989_) {
+	public boolean killedEntity(ServerLevel p_216988_, LivingEntity p_216989_) {
 		this.setHuntCooldown(1200);
-		return super.wasKilled(p_216988_, p_216989_);
+		return super.killedEntity(p_216988_, p_216989_);
 	}
 
 	protected void createInventory() {
@@ -301,7 +301,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	private void updateContainerEquipment() {
 		if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
-			if (!this.level.isClientSide) {
+			if (!this.level().isClientSide) {
 				this.setDropChance(EquipmentSlot.CHEST, 0.0F);
 
 				ItemStack stack = this.inventory.getItem(0);

@@ -22,7 +22,7 @@ public class MoveToMeatGoal extends Goal {
 
 	public boolean canUse() {
 		if (!this.mob.isTame() && this.mob instanceof IHunger && ((IHunger) this.mob).getHunger() <= 0) {
-			List<ItemEntity> list = this.mob.level.getEntitiesOfClass(ItemEntity.class, this.mob.getBoundingBox().inflate(8.0D, 4.0D, 8.0D), ALLOWED_ITEMS);
+			List<ItemEntity> list = this.mob.level().getEntitiesOfClass(ItemEntity.class, this.mob.getBoundingBox().inflate(8.0D, 4.0D, 8.0D), ALLOWED_ITEMS);
 			if (!list.isEmpty() && this.mob.hasLineOfSight(list.get(0))) {
 				return this.mob.getNavigation().moveTo(list.get(0), (double) 1.1F);
 			}
