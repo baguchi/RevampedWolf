@@ -6,9 +6,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Wolf;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class ClientWolfScreenOpenPacket {
     private final int containerId;
@@ -30,20 +28,20 @@ public class ClientWolfScreenOpenPacket {
         buf.writeInt(packet.entityId);
     }
 
-    public static void handle(ClientWolfScreenOpenPacket packet, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
+    public void handle(CustomPayloadEvent.Context context) {
+        context.enqueueWork(() -> {
                     Minecraft minecraft = Minecraft.getInstance();
                     LocalPlayer clientPlayer = minecraft.player;
-                    Entity entity = minecraft.level.getEntity(packet.entityId);
+            Entity entity = minecraft.level.getEntity(entityId);
 
                     if (entity instanceof Wolf) {
                         Wolf wolf = (Wolf) entity;
 
-                        ClientPacketHandler.openWolfInventory(wolf, clientPlayer, packet.containerId);
+                        ClientPacketHandler.openWolfInventory(wolf, clientPlayer, containerId);
                     }
                 }
         );
-        ctx.get().setPacketHandled(true);
+        context.setPacketHandled(true);
 
     }
 }

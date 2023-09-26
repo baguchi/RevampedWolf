@@ -37,7 +37,7 @@ public class ClientRegistrar {
 	public static void registerEntityRenders(EntityRenderersEvent.AddLayers event) {
 		Minecraft.getInstance().getEntityRenderDispatcher().renderers.values().forEach(r -> {
 			if (r instanceof WolfRenderer) {
-				((WolfRenderer) r).addLayer(new WolfHeldItemLayer((WolfRenderer) r));
+				((WolfRenderer) r).addLayer(new WolfHeldItemLayer((WolfRenderer) r, Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer()));
 				((WolfRenderer) r).addLayer(new WolfArmorLayer((WolfRenderer) r, event.getEntityModels()));
 			}
 		});

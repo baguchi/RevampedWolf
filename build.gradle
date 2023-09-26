@@ -2,20 +2,15 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle' version '[6.0.18,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
-apply plugin: 'net.neoforged.gradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: "org.spongepowered.mixin"
 
 mixin {
     add sourceSets.main, "revampedwolf.refmap.json"
 }
 
-version = '1.20.1-5.0.0'
+version = '1.20.2-6.0.0'
 group = 'baguchan.revampedwolf' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'revampedwolf'
 
@@ -134,7 +129,7 @@ dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.neoforged:forge:1.20.1-47.1.55'
+    minecraft 'net.minecraftforge:forge:1.20.2-48.0.6'
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
     // Real mod deobf dependency examples - these get remapped to your current mappings

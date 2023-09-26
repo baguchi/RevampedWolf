@@ -137,7 +137,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 			if (sp.containerMenu != sp.inventoryMenu) sp.closeContainer();
 
 			sp.nextContainerCounter();
-			RevampedWolf.CHANNEL.send(PacketDistributor.PLAYER.with(() -> sp), new ClientWolfScreenOpenPacket(sp.containerCounter, this.getId()));
+			RevampedWolf.CHANNEL.send(new ClientWolfScreenOpenPacket(sp.containerCounter, this.getId()), PacketDistributor.PLAYER.with(sp));
 			sp.containerMenu = new WolfInventoryMenu(sp.containerCounter, sp.getInventory(), this.inventory, wolf);
 			sp.initMenu(sp.containerMenu);
 			MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(sp, sp.containerMenu));
