@@ -8,24 +8,22 @@ import baguchan.revampedwolf.registry.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.WolfRenderer;
 import net.minecraft.world.item.DyeableLeatherItem;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = RevampedWolf.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegistrar {
-	public static void renderItemColor() {
-		Minecraft.getInstance().getItemColors().register((p_92708_, p_92709_) -> {
+
+	@SubscribeEvent
+	public static void setup(RegisterColorHandlersEvent.Item event) {
+		event.register((p_92708_, p_92709_) -> {
 			return p_92709_ > 0 ? -1 : ((DyeableLeatherItem) p_92708_.getItem()).getColor(p_92708_);
 		}, ModItems.LEATHER_WOLF_ARMOR.get());
-	}
-
-	public static void setup(FMLCommonSetupEvent event) {
-		renderItemColor();
 	}
 
 	@SubscribeEvent

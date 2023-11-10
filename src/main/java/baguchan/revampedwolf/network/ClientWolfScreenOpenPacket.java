@@ -6,7 +6,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Wolf;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public class ClientWolfScreenOpenPacket {
     private final int containerId;
@@ -28,7 +28,7 @@ public class ClientWolfScreenOpenPacket {
         buf.writeInt(packet.entityId);
     }
 
-    public void handle(CustomPayloadEvent.Context context) {
+    public void handle(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
                     Minecraft minecraft = Minecraft.getInstance();
                     LocalPlayer clientPlayer = minecraft.player;

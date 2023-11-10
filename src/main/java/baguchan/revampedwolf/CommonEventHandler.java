@@ -4,10 +4,10 @@ import baguchan.revampedwolf.api.IWolfTypes;
 import baguchan.revampedwolf.api.WolfGroupData;
 import baguchan.revampedwolf.api.WolfTypes;
 import net.minecraft.world.entity.animal.Wolf;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.event.entity.living.MobSpawnEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 
 @Mod.EventBusSubscriber(modid = RevampedWolf.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonEventHandler {

@@ -12,7 +12,9 @@ import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,10 +41,10 @@ public abstract class ServerPlayerMixin extends Player implements IOpenWolfConta
 
         this.nextContainerCounter();
         ClientWolfScreenOpenPacket message = new ClientWolfScreenOpenPacket(this.containerCounter, p_9059_.getId());
-        RevampedWolf.CHANNEL.send(message, PacketDistributor.TRACKING_ENTITY_AND_SELF.with(p_9059_));
+        RevampedWolf.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> p_9059_), message);
         this.containerMenu = new WolfInventoryMenu(this.containerCounter, this.getInventory(), p_9060_, p_9059_);
         this.containerMenu.addSlotListener(this.containerListener);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerContainerEvent.Open(this, this.containerMenu));
+        NeoForge.EVENT_BUS.post(new PlayerContainerEvent.Open(this, this.containerMenu));
     }
 
     @Shadow

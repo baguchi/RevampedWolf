@@ -36,10 +36,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -137,10 +140,10 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 			if (sp.containerMenu != sp.inventoryMenu) sp.closeContainer();
 
 			sp.nextContainerCounter();
-			RevampedWolf.CHANNEL.send(new ClientWolfScreenOpenPacket(sp.containerCounter, this.getId()), PacketDistributor.PLAYER.with(sp));
+			RevampedWolf.CHANNEL.send(PacketDistributor.PLAYER.with(() -> sp), new ClientWolfScreenOpenPacket(sp.containerCounter, this.getId()));
 			sp.containerMenu = new WolfInventoryMenu(sp.containerCounter, sp.getInventory(), this.inventory, wolf);
 			sp.initMenu(sp.containerMenu);
-			MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(sp, sp.containerMenu));
+			NeoForge.EVENT_BUS.post(new PlayerContainerEvent.Open(sp, sp.containerMenu));
 		}
 	}
 
@@ -279,7 +282,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 		this.inventory.addListener(this);
 		this.updateContainerEquipment();
-		this.itemHandler = net.minecraftforge.common.util.LazyOptional.of(() -> new net.minecraftforge.items.wrapper.InvWrapper(this.inventory));
+		this.itemHandler = LazyOptional.of(() -> new InvWrapper(this.inventory));
 	}
 
 	protected void dropEquipment() {
@@ -384,11 +387,11 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		return p_30645_.getItem() instanceof WolfArmorItem;
 	}
 
-	private net.minecraftforge.common.util.LazyOptional<?> itemHandler = null;
+	private LazyOptional<?> itemHandler = null;
 
 	@Override
-	public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable net.minecraft.core.Direction facing) {
-		if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER && itemHandler != null)
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable net.minecraft.core.Direction facing) {
+		if (this.isAlive() && capability == Capabilities.ITEM_HANDLER && itemHandler != null)
 			return itemHandler.cast();
 		return super.getCapability(capability, facing);
 	}
@@ -397,7 +400,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	public void invalidateCaps() {
 		super.invalidateCaps();
 		if (itemHandler != null) {
-			net.minecraftforge.common.util.LazyOptional<?> oldHandler = itemHandler;
+			LazyOptional<?> oldHandler = itemHandler;
 			itemHandler = null;
 			oldHandler.invalidate();
 		}
