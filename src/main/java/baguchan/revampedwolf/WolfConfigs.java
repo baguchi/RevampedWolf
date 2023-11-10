@@ -1,10 +1,8 @@
 package baguchan.revampedwolf;
 
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Mod.EventBusSubscriber(modid = RevampedWolf.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class WolfConfigs {
 	public static final Common COMMON;
 	public static final ModConfigSpec COMMON_SPEC;
