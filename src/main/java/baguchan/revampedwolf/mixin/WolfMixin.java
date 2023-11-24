@@ -16,6 +16,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -66,6 +67,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	private int huntCooldown;
 	private int eatTick;
 	private int hungerTick;
+	private float saturation;
 
 	@Shadow
 	@Final
@@ -154,14 +156,24 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 			ItemStack mainhand = this.getItemInHand(InteractionHand.MAIN_HAND);
 
 			if (!this.isUsingItem() && this.getItemInHand(InteractionHand.MAIN_HAND).getItem().getFoodProperties() != null && this.getItemInHand(InteractionHand.MAIN_HAND).getItem().getFoodProperties().isMeat()) {
-				this.eatTick++;
-				if (this.eatTick > 300) {
-					if (!mainhand.isEmpty()) {
-						this.startUsingItem(InteractionHand.MAIN_HAND);
+				if (this.getHealth() < this.getMaxHealth() || !this.isTame()) {
+					this.eatTick++;
+					if (this.eatTick > 200) {
+						if (!mainhand.isEmpty()) {
+							this.startUsingItem(InteractionHand.MAIN_HAND);
+						}
 					}
 				}
 			} else {
 				this.eatTick = 0;
+			}
+		}
+		if (this.getHealth() < this.getMaxHealth()) {
+			if (saturation > 0) {
+				this.saturation = Mth.clamp(this.saturation - 0.1F, 0, 20);
+				if (saturation >= 0.1F) {
+					heal(1);
+				}
 			}
 		}
 	}
@@ -175,6 +187,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 				if (copy.getItem().getFoodProperties() != null) {
 					this.heal(copy.getItem().getFoodProperties().getNutrition());
+					this.saturation = Mth.clamp(this.saturation + copy.getItem().getFoodProperties().getNutrition() * copy.getItem().getFoodProperties().getSaturationModifier() * 2.0F, 0, 20);
 				}
 			}
 		}
