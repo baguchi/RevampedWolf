@@ -31,6 +31,24 @@ public class WolfInventoryMenu extends AbstractContainerMenu {
 				return 1;
 			}
 		});
+		this.addSlot(new Slot(p_39658_, 1, 8, 36) {
+			public boolean mayPlace(ItemStack p_39690_) {
+				return true;
+			}
+
+			public int getMaxStackSize() {
+				return 1;
+			}
+		});
+		this.addSlot(new Slot(p_39658_, 2, 8, 18 * 3) {
+			public boolean mayPlace(ItemStack p_39690_) {
+				return p_39690_.getItem().getFoodProperties() != null && p_39690_.getItem().getFoodProperties().isMeat();
+			}
+
+			public int getMaxStackSize() {
+				return 1;
+			}
+		});
 
 		for (int i1 = 0; i1 < 3; ++i1) {
 			for (int k1 = 0; k1 < 9; ++k1) {
@@ -59,11 +77,19 @@ public class WolfInventoryMenu extends AbstractContainerMenu {
 				if (!this.moveItemStackTo(itemstack1, i, this.slots.size(), true)) {
 					return ItemStack.EMPTY;
 				}
+			} else if (this.getSlot(2).mayPlace(itemstack1)) {
+				if (!this.moveItemStackTo(itemstack1, 2, 3, false)) {
+					return ItemStack.EMPTY;
+				}
+			} else if (this.getSlot(1).mayPlace(itemstack1)) {
+				if (!this.moveItemStackTo(itemstack1, 1, 2, false)) {
+					return ItemStack.EMPTY;
+				}
 			} else if (this.getSlot(0).mayPlace(itemstack1)) {
 				if (!this.moveItemStackTo(itemstack1, 0, 1, false)) {
 					return ItemStack.EMPTY;
 				}
-			} else if (i <= 1 || !this.moveItemStackTo(itemstack1, 1, i, false)) {
+			} else if (i <= 2 || !this.moveItemStackTo(itemstack1, 3, i, false)) {
 				int j = i + 27;
 				int k = j + 9;
 				if (p_39666_ >= j && p_39666_ < k) {
