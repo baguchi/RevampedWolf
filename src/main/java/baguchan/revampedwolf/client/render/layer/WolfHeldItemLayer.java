@@ -31,9 +31,7 @@ public class WolfHeldItemLayer extends RenderLayer<Wolf, WolfModel<Wolf>> {
 			poseStack.pushPose();
 			headedModel.getHead().translateAndRotate(poseStack);
 			float scale = flag1 ? 0.75F : 1.0F;
-			poseStack.translate(0, 0, -0.5F * scale);
-			poseStack.mulPose(Axis.YP.rotationDegrees(p_117015_));
-			poseStack.mulPose(Axis.XP.rotationDegrees(-p_117016_));
+            poseStack.translate(0, 0.1F * (flag1 ? 4.0F : 1.25F), (flag1 ? -0.25F : -0.5F));
 			poseStack.mulPose(Axis.XP.rotationDegrees(90.0f));
 			ItemStack itemStack = p_117010_.getItemBySlot(EquipmentSlot.MAINHAND);
 			this.itemInHandRenderer.renderItem(p_117010_, itemStack, ItemDisplayContext.GROUND, false, poseStack, p_117008_, p_117009_);

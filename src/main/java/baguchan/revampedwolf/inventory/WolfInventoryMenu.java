@@ -46,7 +46,7 @@ public class WolfInventoryMenu extends AbstractContainerMenu {
 			}
 
 			public int getMaxStackSize() {
-				return 1;
+				return 8;
 			}
 		});
 
