@@ -1,5 +1,6 @@
 package baguchan.revampedwolf.mixin;
 
+import bagu_chan.bagus_lib.api.IBaguPacket;
 import baguchan.revampedwolf.RevampedWolf;
 import baguchan.revampedwolf.api.*;
 import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
@@ -8,11 +9,9 @@ import baguchan.revampedwolf.entity.goal.WolfAvoidEntityGoal;
 import baguchan.revampedwolf.inventory.WolfInventoryMenu;
 import baguchan.revampedwolf.item.WolfArmorItem;
 import baguchan.revampedwolf.network.ClientWolfScreenOpenPacket;
+import baguchan.revampedwolf.network.WolfVariantPacket;
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -56,9 +55,9 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 @Mixin(Wolf.class)
-public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHunt, IHunger, IHasArmor, IHasInventory, IWolfTypes, ContainerListener {
+public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHunt, IHunger, IHasArmor, IHasInventory, IWolfTypes, ContainerListener, IBaguPacket {
 
-	private static final EntityDataAccessor<String> DATA_TYPE = SynchedEntityData.defineId(Wolf.class, EntityDataSerializers.STRING);
+	private String variant = WolfTypes.WHITE.type;
 
 
 	private static final UUID ARMOR_MODIFIER_UUID = UUID.fromString("556E1665-8B10-40C8-8F9D-CF9B1667F295");
@@ -84,11 +83,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		this.setCanPickUpLoot(true);
 		this.createInventory();
 
-	}
-
-	@Inject(method = "defineSynchedData", at = @At("TAIL"))
-	protected void defineSynchedData(CallbackInfo callbackInfo) {
-		this.entityData.define(DATA_TYPE, WolfTypes.WHITE.type);
 	}
 
 	@Inject(method = "registerGoals", at = @At("HEAD"), cancellable = true)
@@ -496,12 +490,20 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	}
 
 	public void setVariant(WolfTypes p_28929_) {
-		this.entityData.set(DATA_TYPE, p_28929_.type);
+		this.variant = p_28929_.type;
+		this.resync(this, this.getId());
 	}
 
 
 	public WolfTypes getVariant() {
-		return WolfTypes.byType(this.entityData.get(DATA_TYPE));
+		return WolfTypes.byType(this.variant);
+	}
+
+	@Override
+	public void resync(Entity entity, int i) {
+		if (!this.level().isClientSide()) {
+			RevampedWolf.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new WolfVariantPacket(entity.getId(), this.variant));
+		}
 	}
 
 	@Inject(method = ("getBreedOffspring"), at = @At("RETURN"))

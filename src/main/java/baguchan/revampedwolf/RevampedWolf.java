@@ -2,6 +2,7 @@ package baguchan.revampedwolf;
 
 import baguchan.revampedwolf.client.ClientRegistrar;
 import baguchan.revampedwolf.network.ClientWolfScreenOpenPacket;
+import baguchan.revampedwolf.network.WolfVariantPacket;
 import baguchan.revampedwolf.registry.ModItems;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -49,6 +50,10 @@ public class RevampedWolf {
         CHANNEL.messageBuilder(ClientWolfScreenOpenPacket.class, 0)
                 .encoder(ClientWolfScreenOpenPacket::write).decoder(ClientWolfScreenOpenPacket::read)
                 .consumerMainThread(ClientWolfScreenOpenPacket::handle)
+                .add();
+        CHANNEL.messageBuilder(WolfVariantPacket.class, 1)
+                .encoder(WolfVariantPacket::write).decoder(WolfVariantPacket::read)
+                .consumerMainThread(WolfVariantPacket::handle)
                 .add();
     }
 
