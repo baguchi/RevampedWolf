@@ -36,11 +36,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -50,7 +46,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -192,7 +187,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		if (!p_28602_.isEmpty() && !this.level().isClientSide) {
 			ItemEntity itementity = new ItemEntity(this.level(), this.getX() + this.getLookAngle().x, this.getY() + 1.0D, this.getZ() + this.getLookAngle().z, p_28602_);
 			itementity.setPickUpDelay(40);
-			itementity.setThrower(this.getUUID());
+			itementity.setThrower(this);
 			this.playSound(SoundEvents.FOX_SPIT, 1.0F, 1.0F);
 			this.level().addFreshEntity(itementity);
 		}
@@ -302,7 +297,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 		this.inventory.addListener(this);
 		this.updateContainerEquipment();
-		this.itemHandler = LazyOptional.of(() -> new InvWrapper(this.inventory));
 	}
 
 	protected void dropEquipment() {
@@ -402,25 +396,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	@Override
 	public boolean isArmor(ItemStack p_30645_) {
 		return p_30645_.getItem() instanceof WolfArmorItem;
-	}
-
-	private LazyOptional<?> itemHandler = null;
-
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable net.minecraft.core.Direction facing) {
-		if (this.isAlive() && capability == Capabilities.ITEM_HANDLER && itemHandler != null)
-			return itemHandler.cast();
-		return super.getCapability(capability, facing);
-	}
-
-	@Override
-	public void invalidateCaps() {
-		super.invalidateCaps();
-		if (itemHandler != null) {
-			LazyOptional<?> oldHandler = itemHandler;
-			itemHandler = null;
-			oldHandler.invalidate();
-		}
 	}
 
 	public ItemStack getArmor() {
