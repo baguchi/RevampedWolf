@@ -11,7 +11,6 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.NetworkRegistry;
 import net.neoforged.neoforge.network.simple.SimpleChannel;
@@ -32,14 +31,14 @@ public class RevampedWolf {
             .serverAcceptedVersions(NETWORK_PROTOCOL::equals)
             .simpleChannel();
 
-    public RevampedWolf() {
+    public RevampedWolf(IEventBus modEventBus) {
         this.setupMessage();
         // Register the setup method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(this::setup);
+        IEventBus bus = modEventBus;
         ModItems.ITEM_REGISTRY.register(bus);
         if (Dist.CLIENT == FMLEnvironment.dist) {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientRegistrar::setup);
+            modEventBus.addListener(ClientRegistrar::setup);
         }
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, WolfConfigs.COMMON_SPEC);
