@@ -165,8 +165,8 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		}
 		if (this.getHealth() < this.getMaxHealth()) {
 			if (saturation > 0) {
-				this.saturation = Mth.clamp(this.saturation - 0.1F, 0, 20);
-				if (saturation >= 0.1F) {
+				this.saturation = Mth.clamp(this.saturation - 0.5F, 0, 20);
+				if (saturation >= 0.5F) {
 					heal(1);
 				}
 			}
