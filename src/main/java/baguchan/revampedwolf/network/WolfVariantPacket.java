@@ -1,14 +1,17 @@
 package baguchan.revampedwolf.network;
 
+import baguchan.revampedwolf.RevampedWolf;
 import baguchan.revampedwolf.api.IWolfTypes;
 import baguchan.revampedwolf.api.WolfTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-public class WolfVariantPacket {
+public class WolfVariantPacket implements CustomPacketPayload {
+    public static final ResourceLocation ID = new ResourceLocation(RevampedWolf.MODID, "wolf_variant");
     private final int entityId;
     private final String variant;
 
@@ -17,24 +20,26 @@ public class WolfVariantPacket {
         this.variant = variant;
     }
 
-    public static void write(WolfVariantPacket packet, FriendlyByteBuf buf) {
-        buf.writeInt(packet.entityId);
-        buf.writeUtf(packet.variant);
+    public void write(FriendlyByteBuf buf) {
+        buf.writeInt(this.entityId);
+        buf.writeUtf(this.variant);
     }
 
-    public static WolfVariantPacket read(FriendlyByteBuf buf) {
-        return new WolfVariantPacket(buf.readInt(), buf.readUtf());
+    public WolfVariantPacket(FriendlyByteBuf buf) {
+        this(buf.readInt(), buf.readUtf());
     }
 
-    public void handle(NetworkEvent.Context context) {
-        if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-            context.enqueueWork(() -> {
-                Entity entity = Minecraft.getInstance().player.level().getEntity(this.entityId);
+    @Override
+    public ResourceLocation id() {
+        return ID;
+    }
+
+    public static void handle(WolfVariantPacket message, PlayPayloadContext context) {
+        context.workHandler().execute(() -> {
+            Entity entity = Minecraft.getInstance().player.level().getEntity(message.entityId);
                 if (entity instanceof IWolfTypes imoss) {
-                    imoss.setVariant(WolfTypes.byType(variant));
+                    imoss.setVariant(WolfTypes.byType(message.variant));
                 }
             });
-        }
-        context.setPacketHandled(true);
     }
 }
