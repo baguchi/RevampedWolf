@@ -1,7 +1,6 @@
 package baguchan.revampedwolf.mixin;
 
 import bagu_chan.bagus_lib.api.IBaguPacket;
-import baguchan.revampedwolf.RevampedWolf;
 import baguchan.revampedwolf.api.*;
 import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
 import baguchan.revampedwolf.entity.goal.MoveToMeatGoal;
@@ -477,7 +476,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	@Override
 	public void resync(Entity entity, int i) {
 		if (!this.level().isClientSide()) {
-			RevampedWolf.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new WolfVariantPacket(entity.getId(), this.variant));
+			PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity).send(new WolfVariantPacket(entity.getId(), this.variant));
 		}
 	}
 
