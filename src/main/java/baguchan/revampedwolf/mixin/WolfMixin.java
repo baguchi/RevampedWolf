@@ -44,6 +44,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -116,6 +117,12 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 				callbackInfo.setReturnValue(InteractionResult.SUCCESS);
 			}
 		}
+
+	}
+
+	@Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Wolf;heal(F)V", shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
+	public void mobInteractHeal(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> cir, ItemStack itemstack) {
+		this.saturation = Mth.clamp(this.saturation + itemstack.getItem().getFoodProperties().getNutrition() * itemstack.getItem().getFoodProperties().getSaturationModifier() * 2.0F, 0, 20);
 
 	}
 
