@@ -472,7 +472,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	public void setVariant(WolfTypes p_28929_) {
 		this.variant = p_28929_.type;
-		this.resync(this, this.getId());
+		this.resync(this);
 	}
 
 
@@ -481,7 +481,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	}
 
 	@Override
-	public void resync(Entity entity, int i) {
+	public void resync(Entity entity) {
 		if (!this.level().isClientSide()) {
 			PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity).send(new WolfVariantPacket(entity.getId(), this.variant));
 		}
