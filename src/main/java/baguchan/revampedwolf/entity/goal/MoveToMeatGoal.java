@@ -1,6 +1,7 @@
 package baguchan.revampedwolf.entity.goal;
 
 import baguchan.revampedwolf.api.IHunger;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -11,7 +12,7 @@ import java.util.function.Predicate;
 
 public class MoveToMeatGoal extends Goal {
 	private static final Predicate<? super ItemEntity> ALLOWED_ITEMS = (p_213616_0_) -> {
-		return p_213616_0_.getItem().getItem().getFoodProperties() != null && p_213616_0_.getItem().isEdible() && p_213616_0_.getItem().getItem().getFoodProperties().isMeat();
+		return p_213616_0_.getItem().is(ItemTags.MEAT);
 	};
 	private final TamableAnimal mob;
 
