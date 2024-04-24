@@ -16,7 +16,6 @@ public class RevampedWolf {
         // Register the setup method for modloading
         modEventBus.addListener(this::setup);
         ModItems.ITEM_REGISTRY.register(modEventBus);
-
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, WolfConfigs.COMMON_SPEC);
     }
 

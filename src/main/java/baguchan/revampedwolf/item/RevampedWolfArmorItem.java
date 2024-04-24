@@ -4,6 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.AnimalArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class RevampedWolfArmorItem extends AnimalArmorItem {
@@ -33,5 +34,10 @@ public class RevampedWolfArmorItem extends AnimalArmorItem {
     @Override
     public ResourceLocation getOverlayTexture() {
         return this.overlayTextureLocation;
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack p_341697_) {
+        return true;
     }
 }

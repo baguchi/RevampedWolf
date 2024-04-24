@@ -1,11 +1,13 @@
 package baguchan.revampedwolf.mixin;
 
-import bagu_chan.bagus_lib.api.IBaguPacket;
 import baguchan.revampedwolf.api.IHunger;
 import baguchan.revampedwolf.api.IHunt;
 import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
 import baguchan.revampedwolf.entity.goal.MoveToMeatGoal;
 import baguchan.revampedwolf.entity.goal.WolfAvoidEntityGoal;
+import baguchan.revampedwolf.item.RevampedWolfArmorItem;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -13,6 +15,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
@@ -38,7 +41,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.function.Predicate;
 
 @Mixin(Wolf.class)
-public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHunt, IHunger, IBaguPacket {
+public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHunt, IHunger {
 	private int huntCooldown;
 	private int eatTick;
 	private int hungerTick;
@@ -47,6 +50,9 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	@Shadow
 	@Final
 	public static Predicate<LivingEntity> PREY_SELECTOR;
+
+	@Shadow
+	public abstract boolean hasArmor();
 
 	protected WolfMixin(EntityType<? extends TamableAnimal> p_27557_, Level p_27558_) {
 		super(p_27557_, p_27558_);
@@ -81,6 +87,47 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, false));
 		this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
 		callbackInfo.cancel();
+	}
+
+	@Inject(method = "actuallyHurt", at = @At(value = "HEAD"), cancellable = true)
+	private void canArmorAbsorb(DamageSource p_331935_, float p_330695_, CallbackInfo ci) {
+		if (this.getBodyArmorItem().getItem() instanceof RevampedWolfArmorItem) {
+			ItemStack itemstack = this.getBodyArmorItem();
+			int i = itemstack.getDamageValue();
+			int j = itemstack.getMaxDamage();
+			super.actuallyHurt(p_331935_, p_330695_);
+			if (!this.getBodyArmorItem().isEmpty()) {
+				if (Crackiness.WOLF_ARMOR.byDamage(i, j) != Crackiness.WOLF_ARMOR.byDamage(this.getBodyArmorItem())) {
+					this.playSound(SoundEvents.WOLF_ARMOR_CRACK);
+					if (this.level() instanceof ServerLevel serverlevel) {
+						serverlevel.sendParticles(
+								new ItemParticleOption(ParticleTypes.ITEM, this.getBodyArmorItem()),
+								this.getX(),
+								this.getY() + 1.0,
+								this.getZ(),
+								20,
+								0.2,
+								0.1,
+								0.2,
+								0.1
+						);
+					}
+				}
+			}
+
+			ci.cancel();
+		}
+	}
+
+	@Inject(method = "mobInteract", at = @At(value = "HEAD"), cancellable = true)
+	public void mobInteract(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> cir) {
+		ItemStack itemstack = p_30412_.getItemInHand(p_30413_);
+		Item item = itemstack.getItem();
+		if (itemstack.getItem() instanceof RevampedWolfArmorItem && this.isOwnedBy(p_30412_) && !this.hasArmor() && !this.isBaby()) {
+			this.setBodyArmorItem(itemstack.copyWithCount(1));
+			itemstack.consume(1, p_30412_);
+			cir.setReturnValue(InteractionResult.SUCCESS);
+		}
 	}
 
 	@Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Wolf;heal(F)V", shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
