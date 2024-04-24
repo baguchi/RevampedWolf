@@ -1,25 +1,19 @@
 package baguchan.revampedwolf.mixin;
 
 import bagu_chan.bagus_lib.api.IBaguPacket;
-import baguchan.revampedwolf.api.*;
+import baguchan.revampedwolf.api.IHunger;
+import baguchan.revampedwolf.api.IHunt;
 import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
 import baguchan.revampedwolf.entity.goal.MoveToMeatGoal;
 import baguchan.revampedwolf.entity.goal.WolfAvoidEntityGoal;
-import baguchan.revampedwolf.inventory.WolfInventoryMenu;
-import baguchan.revampedwolf.item.WolfArmorItem;
-import baguchan.revampedwolf.network.ClientWolfScreenOpenPacket;
-import baguchan.revampedwolf.network.WolfVariantPacket;
-import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.*;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.animal.Animal;
@@ -31,12 +25,7 @@ import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -46,18 +35,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.UUID;
 import java.util.function.Predicate;
 
 @Mixin(Wolf.class)
-public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHunt, IHunger, IHasArmor, IHasInventory, IWolfTypes, ContainerListener, IBaguPacket {
-
-	private String variant = WolfTypes.WHITE.type;
-
-
-	private static final UUID ARMOR_MODIFIER_UUID = UUID.fromString("556E1665-8B10-40C8-8F9D-CF9B1667F295");
-	private static final UUID TOUGHNESS_ARMOR_MODIFIER_UUID = UUID.fromString("db9bf914-5933-474e-a184-e73040fb0789");
-	private static final UUID KNOCKBACK_RESISTANCE_MODIFIER_UUID = UUID.fromString("7c036153-7d05-c9e5-2f29-c664ef413677");
+public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHunt, IHunger, IBaguPacket {
 	private int huntCooldown;
 	private int eatTick;
 	private int hungerTick;
@@ -67,8 +48,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	@Final
 	public static Predicate<LivingEntity> PREY_SELECTOR;
 
-	protected SimpleContainer inventory;
-
 	protected WolfMixin(EntityType<? extends TamableAnimal> p_27557_, Level p_27558_) {
 		super(p_27557_, p_27558_);
 	}
@@ -76,8 +55,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	@Inject(method = "<init>", at = @At("TAIL"))
 	public void onConstructor(EntityType<? extends Wolf> p_27557_, Level p_27558_, CallbackInfo info) {
 		this.setCanPickUpLoot(true);
-		this.createInventory();
-
 	}
 
 	@Inject(method = "registerGoals", at = @At("HEAD"), cancellable = true)
@@ -106,39 +83,10 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		callbackInfo.cancel();
 	}
 
-	@Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
-	public void mobInteract(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> callbackInfo) {
-		ItemStack itemstack = p_30412_.getItemInHand(p_30413_);
-		Item item = itemstack.getItem();
-		if (p_30412_.isSecondaryUseActive() && this.isTame() && this.isOwnedBy(p_30412_)) {
-			if (p_30412_ instanceof IOpenWolfContainer) {
-				this.openInventory(p_30412_);
-				this.gameEvent(GameEvent.ENTITY_INTERACT);
-				callbackInfo.setReturnValue(InteractionResult.SUCCESS);
-			}
-		}
-
-	}
-
 	@Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Wolf;heal(F)V", shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void mobInteractHeal(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> cir, ItemStack itemstack) {
-		this.saturation = Mth.clamp(this.saturation + itemstack.getItem().getFoodProperties().getNutrition() * itemstack.getItem().getFoodProperties().getSaturationModifier() * 2.0F, 0, 20);
+		this.saturation = Mth.clamp(this.saturation + itemstack.getItem().getFoodProperties(itemstack, this).nutrition() * itemstack.getItem().getFoodProperties(itemstack, this).saturation() * 2.0F, 0, 20);
 
-	}
-
-	public void openInventory(Player player) {
-		Wolf wolf = (Wolf) ((Object) this);
-		if (!this.level().isClientSide
-				&& player instanceof IOpenWolfContainer) {
-			ServerPlayer sp = (ServerPlayer) player;
-			if (sp.containerMenu != sp.inventoryMenu) sp.closeContainer();
-
-			sp.nextContainerCounter();
-			PacketDistributor.PLAYER.with(sp).send(new ClientWolfScreenOpenPacket(sp.containerCounter, this.getId()));
-			sp.containerMenu = new WolfInventoryMenu(sp.containerCounter, sp.getInventory(), this.inventory, wolf);
-			sp.initMenu(sp.containerMenu);
-			NeoForge.EVENT_BUS.post(new PlayerContainerEvent.Open(sp, sp.containerMenu));
-		}
 	}
 
 	@Inject(method = "aiStep", at = @At("HEAD"), cancellable = true)
@@ -150,7 +98,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 			ItemStack mainhand = this.getItemInHand(InteractionHand.MAIN_HAND);
 
-			if (!this.isUsingItem() && this.getItemInHand(InteractionHand.MAIN_HAND).getItem().getFoodProperties() != null && this.getItemInHand(InteractionHand.MAIN_HAND).getItem().getFoodProperties().isMeat()) {
+			if (!this.isUsingItem() && this.getItemInHand(InteractionHand.MAIN_HAND).getItem().getFoodProperties(mainhand, this) != null && this.getItemInHand(InteractionHand.MAIN_HAND).is(ItemTags.MEAT)) {
 				if (this.getHealth() < this.getMaxHealth() || !this.isTame()) {
 					this.eatTick++;
 					if (this.eatTick > 200) {
@@ -180,9 +128,9 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 			if (!this.useItem.isEmpty() && this.isUsingItem()) {
 				ItemStack copy = this.useItem.copy();
 
-				if (copy.getItem().getFoodProperties() != null) {
-					this.heal(copy.getItem().getFoodProperties().getNutrition());
-					this.saturation = Mth.clamp(this.saturation + copy.getItem().getFoodProperties().getNutrition() * copy.getItem().getFoodProperties().getSaturationModifier() * 2.0F, 0, 20);
+				if (copy.getItem().getFoodProperties(useItem, this) != null) {
+					this.heal(copy.getItem().getFoodProperties(useItem, this).nutrition());
+					this.saturation = Mth.clamp(this.saturation + copy.getItem().getFoodProperties(useItem, this).nutrition() * copy.getItem().getFoodProperties(useItem, this).saturation() * 2.0F, 0, 20);
 				}
 			}
 		}
@@ -207,7 +155,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	public boolean canHoldItem(ItemStack p_28578_) {
 		Item item = p_28578_.getItem();
 		ItemStack itemstack = this.getItemBySlot(EquipmentSlot.MAINHAND);
-		return itemstack.isEmpty() && item.isEdible() && item.getFoodProperties().isMeat();
+		return itemstack.isEmpty() && p_28578_.is(ItemTags.MEAT);
 	}
 
 	@Override
@@ -233,50 +181,16 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	@Inject(method = "addAdditionalSaveData", at = @At("TAIL"), cancellable = true)
 	public void addAdditionalSaveData(CompoundTag p_213281_1_, CallbackInfo callbackInfo) {
-		p_213281_1_.putString("Type", this.getVariant().getSerializedName());
 		p_213281_1_.putInt("HuntingCooldown", this.huntCooldown);
 		p_213281_1_.putInt("EatTick", this.eatTick);
 		p_213281_1_.putInt("HungerTick", this.hungerTick);
-
-		if (!this.inventory.getItem(0).isEmpty()) {
-			p_213281_1_.put("ArmorItem", this.inventory.getItem(0).save(new CompoundTag()));
-		}
-		if (!this.inventory.getItem(1).isEmpty()) {
-			p_213281_1_.put("OffHandWolfItem", this.inventory.getItem(1).save(new CompoundTag()));
-		}
-		if (!this.inventory.getItem(2).isEmpty()) {
-			p_213281_1_.put("MainHandWolfItem", this.inventory.getItem(2).save(new CompoundTag()));
-		}
 	}
 
 	@Inject(method = "readAdditionalSaveData", at = @At("TAIL"), cancellable = true)
 	public void readAdditionalSaveData(CompoundTag p_70037_1_, CallbackInfo callbackInfo) {
-		this.setVariant(WolfTypes.byType(p_70037_1_.getString("Type")));
-
 		this.huntCooldown = p_70037_1_.getInt("HuntingCooldown");
 		this.eatTick = p_70037_1_.getInt("EatTick");
 		this.hungerTick = p_70037_1_.getInt("HungerTick");
-			if (p_70037_1_.contains("ArmorItem", 10)) {
-				ItemStack itemstack = ItemStack.of(p_70037_1_.getCompound("ArmorItem"));
-				if (!itemstack.isEmpty() && this.isArmor(itemstack)) {
-					this.inventory.setItem(0, itemstack);
-				}
-			}
-
-		if (p_70037_1_.contains("OffHandWolfItem", 10)) {
-			ItemStack itemstack = ItemStack.of(p_70037_1_.getCompound("OffHandWolfItem"));
-			if (!itemstack.isEmpty()) {
-				this.inventory.setItem(1, itemstack);
-			}
-		}
-		if (p_70037_1_.contains("MainHandWolfItem", 10)) {
-			ItemStack itemstack = ItemStack.of(p_70037_1_.getCompound("MainHandWolfItem"));
-			if (!itemstack.isEmpty()) {
-				this.inventory.setItem(2, itemstack);
-			}
-		}
-
-		this.updateContainerEquipment();
 		this.setCanPickUpLoot(true);
 	}
 
@@ -284,90 +198,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	public boolean killedEntity(ServerLevel p_216988_, LivingEntity p_216989_) {
 		this.setHuntCooldown(1200);
 		return super.killedEntity(p_216988_, p_216989_);
-	}
-
-	protected void createInventory() {
-		SimpleContainer simplecontainer = this.inventory;
-		this.inventory = new SimpleContainer(this.getInventorySize());
-		if (simplecontainer != null) {
-			simplecontainer.removeListener(this);
-			int i = Math.min(simplecontainer.getContainerSize(), this.inventory.getContainerSize());
-
-			for (int j = 0; j < i; ++j) {
-				ItemStack itemstack = simplecontainer.getItem(j);
-				if (!itemstack.isEmpty()) {
-					this.inventory.setItem(j, itemstack.copy());
-				}
-			}
-		}
-
-		this.inventory.addListener(this);
-		this.updateContainerEquipment();
-	}
-
-	protected void dropEquipment() {
-		super.dropEquipment();
-		if (this.inventory != null) {
-			for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
-				ItemStack itemstack = this.inventory.getItem(i);
-				if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
-					this.spawnAtLocation(itemstack);
-				}
-			}
-
-		}
-	}
-
-	private int getInventorySize() {
-		return 3;
-	}
-
-	private void updateContainerEquipment() {
-		this.setDropChance(EquipmentSlot.OFFHAND, 0.0F);
-		this.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
-			if (!this.level().isClientSide) {
-				this.setDropChance(EquipmentSlot.CHEST, 0.0F);
-
-				ItemStack stack = this.inventory.getItem(0);
-				if (this.isArmor(stack)) {
-					AttributeInstance armor = this.getAttribute(Attributes.ARMOR);
-					if (armor != null) {
-						armor.removeModifier(ARMOR_MODIFIER_UUID);
-						int i = ((WolfArmorItem) stack.getItem()).getDefense();
-						if (i != 0) {
-							armor.addTransientModifier(new AttributeModifier(ARMOR_MODIFIER_UUID, "Wolf armor bonus", i, AttributeModifier.Operation.ADDITION));
-						}
-
-					}
-
-					AttributeInstance toughness = this.getAttribute(Attributes.ARMOR_TOUGHNESS);
-					if (toughness != null) {
-						toughness.removeModifier(TOUGHNESS_ARMOR_MODIFIER_UUID);
-
-						float i = ((WolfArmorItem) stack.getItem()).getToughness();
-						if (i != 0) {
-							toughness.addTransientModifier(new AttributeModifier(TOUGHNESS_ARMOR_MODIFIER_UUID, "Wolf Toughness armor bonus", i, AttributeModifier.Operation.ADDITION));
-						}
-					}
-
-					AttributeInstance knockback_resistance = this.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
-					if (knockback_resistance != null) {
-						knockback_resistance.removeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID);
-
-						float i = ((WolfArmorItem) stack.getItem()).getToughness();
-						if (i != 0) {
-							knockback_resistance.addTransientModifier(new AttributeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID, "Wolf KnockBack Resistance bonus", i, AttributeModifier.Operation.ADDITION));
-						}
-					}
-				}
-
-		}
-	}
-
-	public SlotAccess getSlot(int p_149743_) {
-
-		int i = p_149743_ - 300;
-		return i >= 0 && i < this.inventory.getContainerSize() ? SlotAccess.forContainer(this.inventory, i) : super.getSlot(p_149743_);
 	}
 
 	@Override
@@ -393,113 +223,5 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	@Override
 	public void setHunger(int hunger) {
 		this.hungerTick = hunger;
-	}
-
-	public boolean isWearingArmor() {
-		return !this.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
-	}
-
-	@Override
-	public boolean isArmor(ItemStack p_30645_) {
-		return p_30645_.getItem() instanceof WolfArmorItem;
-	}
-
-	public ItemStack getArmor() {
-		return this.getItemBySlot(EquipmentSlot.CHEST);
-	}
-
-	@Override
-	public Iterable<ItemStack> getArmorSlots() {
-		return Lists.newArrayList(this.inventory.getItem(0));
-	}
-
-	@Override
-	public Iterable<ItemStack> getHandSlots() {
-		return Lists.newArrayList(this.inventory.getItem(1), this.inventory.getItem(2));
-	}
-
-	public ItemStack getItemBySlot(EquipmentSlot p_21467_) {
-		if (p_21467_ == EquipmentSlot.OFFHAND) {
-			return this.inventory.getItem(1);
-		}
-		if (p_21467_ == EquipmentSlot.MAINHAND) {
-			return this.inventory.getItem(2);
-		}
-		switch (p_21467_.getType()) {
-			case ARMOR:
-				return this.inventory.getItem(0);
-			default:
-				return super.getItemBySlot(p_21467_);
-		}
-	}
-
-	public void setItemSlot(EquipmentSlot p_21416_, ItemStack p_21417_) {
-		this.verifyEquippedItem(p_21417_);
-		switch (p_21416_.getType()) {
-			case HAND:
-				if (p_21416_ == EquipmentSlot.OFFHAND) {
-					this.inventory.setItem(1, p_21417_);
-					break;
-				} else if (p_21416_ == EquipmentSlot.MAINHAND) {
-					this.inventory.setItem(2, p_21417_);
-					break;
-				} else {
-					super.setItemSlot(p_21416_, p_21417_);
-					break;
-				}
-			case ARMOR:
-				this.inventory.setItem(0, p_21417_);
-		}
-	}
-
-	public boolean hasInventoryChanged(Container p_149512_) {
-		return this.inventory != p_149512_;
-	}
-
-	@Override
-	public SimpleContainer getContainer() {
-		return this.inventory;
-	}
-
-	@Override
-	public void containerChanged(Container p_18983_) {
-		this.updateContainerEquipment();
-		ItemStack itemstack = this.getArmor();
-		if (this.tickCount > 20 && this.isArmor(itemstack)) {
-			this.playSound(SoundEvents.ARMOR_EQUIP_GENERIC, 1.0F, 1.0F);
-		}
-	}
-
-	public void setVariant(WolfTypes p_28929_) {
-		this.variant = p_28929_.type;
-		this.resync(this);
-	}
-
-
-	public WolfTypes getVariant() {
-		return WolfTypes.byType(this.variant);
-	}
-
-	@Override
-	public void resync(Entity entity) {
-		if (!this.level().isClientSide()) {
-			PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity).send(new WolfVariantPacket(entity.getId(), this.variant));
-		}
-	}
-
-	@Inject(method = ("getBreedOffspring"), at = @At("RETURN"))
-	public Wolf getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_, CallbackInfoReturnable<Wolf> ci) {
-		Wolf wolf = ci.getReturnValue();
-		((IWolfTypes) wolf).setVariant(getOffspringType((Wolf) p_146744_));
-		return wolf;
-	}
-
-	private WolfTypes getOffspringType(Wolf p_28931_) {
-		WolfTypes type = this.getVariant();
-		WolfTypes type1 = ((IWolfTypes) p_28931_).getVariant();
-		WolfTypes type2 = this.random.nextBoolean() ? type : type1;
-
-
-		return type2;
 	}
 }
