@@ -6,11 +6,13 @@ import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
 import baguchan.revampedwolf.entity.goal.MoveToMeatGoal;
 import baguchan.revampedwolf.entity.goal.WolfAvoidEntityGoal;
 import baguchan.revampedwolf.item.RevampedWolfArmorItem;
+import baguchan.revampedwolf.registry.ModItems;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -92,30 +94,63 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	@Inject(method = "actuallyHurt", at = @At(value = "HEAD"), cancellable = true)
 	private void canArmorAbsorb(DamageSource p_331935_, float p_330695_, CallbackInfo ci) {
 		if (this.getBodyArmorItem().getItem() instanceof RevampedWolfArmorItem) {
-			ItemStack itemstack = this.getBodyArmorItem();
-			int i = itemstack.getDamageValue();
-			int j = itemstack.getMaxDamage();
-			super.actuallyHurt(p_331935_, p_330695_);
-			if (!this.getBodyArmorItem().isEmpty()) {
-				if (Crackiness.WOLF_ARMOR.byDamage(i, j) != Crackiness.WOLF_ARMOR.byDamage(this.getBodyArmorItem())) {
-					this.playSound(SoundEvents.WOLF_ARMOR_CRACK);
-					if (this.level() instanceof ServerLevel serverlevel) {
-						serverlevel.sendParticles(
-								new ItemParticleOption(ParticleTypes.ITEM, this.getBodyArmorItem()),
-								this.getX(),
-								this.getY() + 1.0,
-								this.getZ(),
-								20,
-								0.2,
-								0.1,
-								0.2,
-								0.1
-						);
-					}
-				}
-			}
 
-			ci.cancel();
+            boolean flag = p_331935_.is(DamageTypeTags.IS_FIRE) && this.getBodyArmorItem().is(ModItems.NETHERITE_WOLF_ARMOR.get());
+            boolean flag2 = p_331935_.is(DamageTypeTags.IS_FALL) && this.getBodyArmorItem().is(ModItems.LEATHER_WOLF_ARMOR.get());
+            boolean flag3 = (p_331935_.is(DamageTypeTags.IS_PROJECTILE) || p_331935_.getDirectEntity() == p_331935_.getEntity() && p_331935_.getDirectEntity() != null) && !(this.getBodyArmorItem().is(ModItems.LEATHER_WOLF_ARMOR.get()));
+            boolean flag4 = p_331935_.is(DamageTypeTags.IS_EXPLOSION) && (this.getBodyArmorItem().is(ModItems.DIAMOND_WOLF_ARMOR.get()) || this.getBodyArmorItem().is(ModItems.NETHERITE_WOLF_ARMOR.get()));
+
+            if (!p_331935_.is(DamageTypeTags.BYPASSES_WOLF_ARMOR) && (flag || flag2 || flag3 || flag4)) {
+                ItemStack itemstack = this.getBodyArmorItem();
+                int i = itemstack.getDamageValue();
+                int j = itemstack.getMaxDamage();
+                itemstack.hurtAndBreak(Mth.ceil(p_330695_), this, EquipmentSlot.BODY);
+                if (!this.getBodyArmorItem().isEmpty()) {
+                    if (Crackiness.WOLF_ARMOR.byDamage(i, j) != Crackiness.WOLF_ARMOR.byDamage(this.getBodyArmorItem())) {
+                        this.playSound(SoundEvents.WOLF_ARMOR_CRACK);
+                        if (this.level() instanceof ServerLevel serverlevel) {
+                            serverlevel.sendParticles(
+                                    new ItemParticleOption(ParticleTypes.ITEM, this.getBodyArmorItem()),
+                                    this.getX(),
+                                    this.getY() + 1.0,
+                                    this.getZ(),
+                                    20,
+                                    0.2,
+                                    0.1,
+                                    0.2,
+                                    0.1
+                            );
+                        }
+                    }
+                }
+
+                ci.cancel();
+            } else {
+                ItemStack itemstack = this.getBodyArmorItem();
+                int i = itemstack.getDamageValue();
+                int j = itemstack.getMaxDamage();
+                super.actuallyHurt(p_331935_, p_330695_);
+                if (!this.getBodyArmorItem().isEmpty()) {
+                    if (Crackiness.WOLF_ARMOR.byDamage(i, j) != Crackiness.WOLF_ARMOR.byDamage(this.getBodyArmorItem())) {
+                        this.playSound(SoundEvents.WOLF_ARMOR_CRACK);
+                        if (this.level() instanceof ServerLevel serverlevel) {
+                            serverlevel.sendParticles(
+                                    new ItemParticleOption(ParticleTypes.ITEM, this.getBodyArmorItem()),
+                                    this.getX(),
+                                    this.getY() + 1.0,
+                                    this.getZ(),
+                                    20,
+                                    0.2,
+                                    0.1,
+                                    0.2,
+                                    0.1
+                            );
+                        }
+                    }
+                }
+
+                ci.cancel();
+            }
 		}
 	}
 
@@ -133,7 +168,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	@Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Wolf;heal(F)V", shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void mobInteractHeal(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> cir, ItemStack itemstack) {
 		this.saturation = Mth.clamp(this.saturation + itemstack.getItem().getFoodProperties(itemstack, this).nutrition() * itemstack.getItem().getFoodProperties(itemstack, this).saturation() * 2.0F, 0, 20);
-
 	}
 
 	@Inject(method = "aiStep", at = @At("HEAD"), cancellable = true)

@@ -5,6 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.AnimalArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import org.jetbrains.annotations.Nullable;
 
 public class RevampedWolfArmorItem extends AnimalArmorItem {
@@ -39,5 +41,10 @@ public class RevampedWolfArmorItem extends AnimalArmorItem {
     @Override
     public boolean isEnchantable(ItemStack p_341697_) {
         return true;
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return super.canApplyAtEnchantingTable(stack, enchantment) || enchantment == Enchantments.FEATHER_FALLING;
     }
 }

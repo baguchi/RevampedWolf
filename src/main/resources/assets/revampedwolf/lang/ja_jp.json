@@ -1,9 +1,9 @@
 {
-  "item.revampedwolf.leather_wolf_armor": "革のウルフアーマー",
-  "item.revampedwolf.iron_wolf_armor": "鉄のウルフアーマー",
-  "item.revampedwolf.golden_wolf_armor": "金のウルフアーマー",
-  "item.revampedwolf.diamond_wolf_armor": "ダイヤモンドのウルフアーマー",
-  "item.revampedwolf.netherite_wolf_armor": "ネザーライトのウルフアーマー",
+  "item.revampedwolf.leather_wolf_armor": "革のオオカミの鎧",
+  "item.revampedwolf.iron_wolf_armor": "鉄のオオカミの鎧",
+  "item.revampedwolf.golden_wolf_armor": "金のオオカミの鎧",
+  "item.revampedwolf.diamond_wolf_armor": "ダイヤモンドのオオカミの鎧",
+  "item.revampedwolf.netherite_wolf_armor": "ネザライトのオオカミの鎧",
   "item.revampedwolf.bagu_hat": "バグハット",
   "revampedwolf.config.disableArmor": "狼のアーマーを無効にする"
 }
