@@ -98,6 +98,6 @@ public class RevampedWolfArmorItem extends AnimalArmorItem {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return super.canApplyAtEnchantingTable(stack, enchantment) || enchantment == Enchantments.FEATHER_FALLING;
+        return enchantment == Enchantments.MENDING || enchantment == Enchantments.UNBREAKING || enchantment == Enchantments.FIRE_PROTECTION || enchantment == Enchantments.BLAST_PROTECTION || enchantment == Enchantments.PROJECTILE_PROTECTION || enchantment == Enchantments.PROTECTION || enchantment == Enchantments.FEATHER_FALLING;
     }
 }
