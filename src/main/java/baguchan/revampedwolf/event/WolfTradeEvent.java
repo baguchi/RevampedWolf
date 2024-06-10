@@ -5,6 +5,9 @@ import baguchan.revampedwolf.registry.ModItems;
 import com.google.common.collect.ImmutableMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -12,6 +15,7 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -20,6 +24,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @EventBusSubscriber(modid = RevampedWolf.MODID)
@@ -70,8 +75,10 @@ public class WolfTradeEvent {
 
         public MerchantOffer getOffer(Entity p_35771_, RandomSource p_35772_) {
             int i = 2 + p_35772_.nextInt(8);
+            Optional<HolderSet.Named<Enchantment>> optional = p_35771_.registryAccess().registryOrThrow(Registries.ENCHANTMENT)
+                    .getTag(EnchantmentTags.ON_TRADED_EQUIPMENT);
             ItemStack itemstack = EnchantmentHelper.enchantItem(
-                    p_35771_.level().enabledFeatures(), p_35772_, new ItemStack(this.itemStack.getItem()), i, false
+                    p_35772_, new ItemStack(this.itemStack.getItem()), i, p_35771_.registryAccess(), optional
             );
             int j = Math.min(this.emeraldCost + i, 64);
             return new MerchantOffer(new ItemCost(Items.EMERALD, j), itemstack, this.maxUses, this.villagerXp, this.priceMultiplier);

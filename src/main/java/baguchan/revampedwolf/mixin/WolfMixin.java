@@ -69,7 +69,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		this.goalSelector.addGoal(3, new WolfAvoidEntityGoal<>(wolf, Llama.class, 24.0F, 1.5D, 1.5D));
 		this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
 		this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
-		this.goalSelector.addGoal(6, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
+		this.goalSelector.addGoal(6, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F));
 		this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
 		this.goalSelector.addGoal(8, new MoveToMeatGoal(this));
 		this.goalSelector.addGoal(9, new WaterAvoidingRandomStrollGoal(this, 1.0D));
@@ -98,12 +98,22 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	public void mobInteract(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> cir) {
 		ItemStack itemstack = p_30412_.getItemInHand(p_30413_);
 		Item item = itemstack.getItem();
-		if (itemstack.getItem() instanceof RevampedWolfArmorItem && this.isOwnedBy(p_30412_) && !this.hasArmor() && !this.isBaby()) {
-			this.setBodyArmorItem(itemstack.copyWithCount(1));
-			itemstack.consume(1, p_30412_);
-			cir.setReturnValue(InteractionResult.SUCCESS);
+		if (!this.level().isClientSide) {
+			if (itemstack.getItem() instanceof RevampedWolfArmorItem && this.isOwnedBy(p_30412_) && !this.hasArmor() && !this.isBaby()) {
+				this.setBodyArmorItem(itemstack.copyWithCount(1));
+				itemstack.consume(1, p_30412_);
+				cir.setReturnValue(InteractionResult.SUCCESS);
+			}
 		}
 	}
+
+	@Inject(method = "hasArmor", at = @At(value = "HEAD"), cancellable = true)
+	public void hasArmor(CallbackInfoReturnable<Boolean> callbackInfo) {
+		if (this.getBodyArmorItem().getItem() instanceof RevampedWolfArmorItem) {
+			callbackInfo.setReturnValue(true);
+		}
+	}
+
 
 	@Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Wolf;heal(F)V", shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void mobInteractHeal(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> cir, ItemStack itemstack) {
