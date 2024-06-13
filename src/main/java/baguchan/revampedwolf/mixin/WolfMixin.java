@@ -9,6 +9,7 @@ import baguchan.revampedwolf.item.RevampedWolfArmorItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -65,6 +66,8 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	protected void registerGoals(CallbackInfo callbackInfo) {
 		Wolf wolf = (Wolf) ((Object) this);
 		this.goalSelector.addGoal(1, new FloatGoal(this));
+		this.goalSelector.addGoal(1, new TamableAnimal.TamableAnimalPanicGoal(1.5, DamageTypeTags.PANIC_ENVIRONMENTAL_CAUSES));
+
 		this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
 		this.goalSelector.addGoal(3, new WolfAvoidEntityGoal<>(wolf, Llama.class, 24.0F, 1.5D, 1.5D));
 		this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
