@@ -6,6 +6,7 @@ import baguchan.revampedwolf.client.render.layer.WolfHeldItemLayer;
 import baguchan.revampedwolf.registry.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.WolfRenderer;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -33,10 +34,8 @@ public class ClientRegistrar {
 
 	@SubscribeEvent
 	public static void registerEntityRenders(EntityRenderersEvent.AddLayers event) {
-		Minecraft.getInstance().getEntityRenderDispatcher().renderers.values().forEach(r -> {
-			if (r instanceof WolfRenderer) {
-				((WolfRenderer) r).addLayer(new WolfHeldItemLayer((WolfRenderer) r, Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer()));
-			}
-		});
+		if (event.getRenderer(EntityType.WOLF) instanceof WolfRenderer r) {
+			((WolfRenderer) r).addLayer(new WolfHeldItemLayer((WolfRenderer) r, Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer()));
+		}
 	}
 }
