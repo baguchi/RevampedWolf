@@ -1,5 +1,6 @@
 package baguchan.revampedwolf.item;
 
+import baguchan.revampedwolf.WolfConfig;
 import com.google.common.base.Suppliers;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
@@ -7,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.AnimalArmorItem;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
@@ -98,4 +100,9 @@ public class RevampedWolfArmorItem extends AnimalArmorItem {
         return true;
     }
 
+
+    @Override
+    public boolean isEnabled(FeatureFlagSet p_249172_) {
+        return super.isEnabled(p_249172_) && !WolfConfig.COMMON.disableWolfArmors.get();
+    }
 }

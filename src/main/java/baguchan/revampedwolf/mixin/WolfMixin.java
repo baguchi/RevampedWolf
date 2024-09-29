@@ -3,6 +3,7 @@ package baguchan.revampedwolf.mixin;
 import baguchan.revampedwolf.api.IHunger;
 import baguchan.revampedwolf.api.IHunt;
 import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
+import baguchan.revampedwolf.entity.goal.LeapAtTargetWolfGoal;
 import baguchan.revampedwolf.entity.goal.MoveToMeatGoal;
 import baguchan.revampedwolf.entity.goal.WolfAvoidEntityGoal;
 import baguchan.revampedwolf.item.RevampedWolfArmorItem;
@@ -70,7 +71,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 		this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
 		this.goalSelector.addGoal(3, new WolfAvoidEntityGoal<>(wolf, Llama.class, 24.0F, 1.5D, 1.5D));
-		this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
+		this.goalSelector.addGoal(4, new LeapAtTargetWolfGoal(this, 2.0F));
 		this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
 		this.goalSelector.addGoal(6, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F));
 		this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));

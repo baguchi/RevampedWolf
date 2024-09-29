@@ -5,5 +5,5 @@
   "item.revampedwolf.diamond_wolf_armor": "다이아몬드 늑대 갑옷",
   "item.revampedwolf.netherite_wolf_armor": "네더라이트 늑대 갑옷",
   "item.revampedwolf.bagu_hat": "바구 모자",
-  "revampedwolf.config.disableArmor": "갑옷 비활성화"
+  "revampedwolf.config.disable_wolf_armor": "갑옷 비활성화"
 }
