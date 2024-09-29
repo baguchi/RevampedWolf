@@ -6,7 +6,10 @@ import baguchan.revampedwolf.client.render.layer.WolfArmorLayer;
 import baguchan.revampedwolf.client.render.layer.WolfHeldItemLayer;
 import baguchan.revampedwolf.registry.ModItems;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.WolfModel;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.WolfRenderer;
+import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -37,7 +40,7 @@ public class ClientRegistrar {
 	public static void registerEntityRenders(EntityRenderersEvent.AddLayers event) {
 		Minecraft.getInstance().getEntityRenderDispatcher().renderers.values().forEach(r -> {
 			if (r instanceof WolfRenderer) {
-				((WolfRenderer) r).addLayer(new WolfHeldItemLayer((WolfRenderer) r));
+				((WolfRenderer) r).addLayer(new WolfHeldItemLayer((RenderLayerParent<Wolf, WolfModel<Wolf>>) r, event.getContext().getItemInHandRenderer()));
 				((WolfRenderer) r).addLayer(new WolfArmorLayer((WolfRenderer) r, event.getEntityModels()));
 			}
 		});
