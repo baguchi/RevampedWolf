@@ -12,7 +12,6 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
@@ -130,7 +129,7 @@ public class LeapAtTargetWolfGoal extends Goal {
 
     private Optional<Vec3> calculateOptimalJumpVector(Mob p_312651_, RandomSource p_312364_, Vec3 p_312758_) {
         for (int i : Util.shuffledCopy(ALLOWED_ANGLES, p_312364_)) {
-            float f = (float) (p_312651_.getAttributeValue(Attributes.JUMP_STRENGTH) * (double) this.maxJumpVelocityMultiplier);
+            float f = (float) (0.41999998688697815 * (double) this.maxJumpVelocityMultiplier);
 
             Optional<Vec3> optional = calculateJumpVectorForAngle(p_312651_, p_312758_, f, i, true);
             if (optional.isPresent()) {
