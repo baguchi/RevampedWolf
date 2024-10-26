@@ -6,7 +6,8 @@ import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
 import baguchan.revampedwolf.entity.goal.LeapAtTargetWolfGoal;
 import baguchan.revampedwolf.entity.goal.MoveToMeatGoal;
 import baguchan.revampedwolf.entity.goal.WolfAvoidEntityGoal;
-import baguchan.revampedwolf.item.RevampedWolfArmorItem;
+import baguchan.revampedwolf.item.WolfArmorItem;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -15,7 +16,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
@@ -26,6 +26,7 @@ import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -50,9 +51,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	@Shadow
 	@Final
 	public static Predicate<LivingEntity> PREY_SELECTOR;
-
-	@Shadow
-	public abstract boolean hasArmor();
 
 	protected WolfMixin(EntityType<? extends TamableAnimal> p_27557_, Level p_27558_) {
 		super(p_27557_, p_27558_);
@@ -84,18 +82,11 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
 		this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setAlertOthers());
 		this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
-		this.targetSelector.addGoal(5, new HuntTargetGoal<>(this, Animal.class, false, PREY_SELECTOR));
+		this.targetSelector.addGoal(5, new HuntTargetGoal<>(this, Animal.class, false, (p_375800_, p_375801_) -> PREY_SELECTOR.test(p_375800_)));
 		this.targetSelector.addGoal(6, new NonTameRandomTargetGoal<>(this, Turtle.class, false, Turtle.BABY_ON_LAND_SELECTOR));
 		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, false));
 		this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
 		callbackInfo.cancel();
-	}
-
-	@Inject(method = "canArmorAbsorb", at = @At(value = "HEAD"), cancellable = true)
-	private void canArmorAbsorb(DamageSource p_331524_, CallbackInfoReturnable<Boolean> cir) {
-		if (this.getBodyArmorItem().getItem() instanceof RevampedWolfArmorItem) {
-			cir.setReturnValue(false);
-		}
 	}
 
 	@Inject(method = "mobInteract", at = @At(value = "HEAD"), cancellable = true)
@@ -103,7 +94,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		ItemStack itemstack = p_30412_.getItemInHand(p_30413_);
 		Item item = itemstack.getItem();
 		if (!this.level().isClientSide) {
-			if (itemstack.getItem() instanceof RevampedWolfArmorItem && this.isOwnedBy(p_30412_) && !this.hasArmor() && !this.isBaby()) {
+			if (itemstack.getItem() instanceof WolfArmorItem && this.isOwnedBy(p_30412_) && !this.isWearingBodyArmor() && !this.isBaby()) {
 				this.setBodyArmorItem(itemstack.copyWithCount(1));
 				itemstack.consume(1, p_30412_);
 				cir.setReturnValue(InteractionResult.SUCCESS);
@@ -111,17 +102,16 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		}
 	}
 
-	@Inject(method = "hasArmor", at = @At(value = "HEAD"), cancellable = true)
-	public void hasArmor(CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (this.getBodyArmorItem().getItem() instanceof RevampedWolfArmorItem) {
-			callbackInfo.setReturnValue(true);
-		}
-	}
-
 
 	@Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Wolf;heal(F)V", shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void mobInteractHeal(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> cir, ItemStack itemstack) {
-		this.saturation = Mth.clamp(this.saturation + itemstack.getItem().getFoodProperties(itemstack, this).nutrition() * itemstack.getItem().getFoodProperties(itemstack, this).saturation() * 2.0F, 0, 20);
+
+		FoodProperties foodproperties = itemstack.get(DataComponents.FOOD);
+		float f = foodproperties != null ? (float) foodproperties.nutrition() : 1.0F;
+		float f2 = foodproperties != null ? (float) foodproperties.saturation() : 0.1F;
+
+
+		this.saturation = Mth.clamp(this.saturation + f * f2 * 2.0F, 0, 20);
 	}
 
 	@Inject(method = "aiStep", at = @At("HEAD"), cancellable = true)
@@ -133,7 +123,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 			ItemStack mainhand = this.getItemInHand(InteractionHand.MAIN_HAND);
 
-			if (!this.isUsingItem() && this.getItemInHand(InteractionHand.MAIN_HAND).getItem().getFoodProperties(mainhand, this) != null && this.getItemInHand(InteractionHand.MAIN_HAND).is(ItemTags.MEAT)) {
+			if (!this.isUsingItem() && this.getItemInHand(InteractionHand.MAIN_HAND).get(DataComponents.FOOD) != null && this.getItemInHand(InteractionHand.MAIN_HAND).is(ItemTags.WOLF_FOOD)) {
 				if (this.getHealth() < this.getMaxHealth() || !this.isTame()) {
 					this.eatTick++;
 					if (this.eatTick > 200) {
@@ -163,9 +153,14 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 			if (!this.useItem.isEmpty() && this.isUsingItem()) {
 				ItemStack copy = this.useItem.copy();
 
-				if (copy.getItem().getFoodProperties(useItem, this) != null) {
-					this.heal(copy.getItem().getFoodProperties(useItem, this).nutrition());
-					this.saturation = Mth.clamp(this.saturation + copy.getItem().getFoodProperties(useItem, this).nutrition() * copy.getItem().getFoodProperties(useItem, this).saturation() * 2.0F, 0, 20);
+				if (copy.get(DataComponents.FOOD) != null) {
+
+					FoodProperties foodproperties = copy.get(DataComponents.FOOD);
+					float f = foodproperties != null ? (float) foodproperties.nutrition() : 1.0F;
+					float f2 = foodproperties != null ? (float) foodproperties.saturation() : 0.1F;
+
+					this.heal(f);
+					this.saturation = Mth.clamp(this.saturation + f * f2 * 2.0F, 0, 20);
 				}
 			}
 		}
@@ -190,11 +185,11 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	public boolean canHoldItem(ItemStack p_28578_) {
 		Item item = p_28578_.getItem();
 		ItemStack itemstack = this.getItemBySlot(EquipmentSlot.MAINHAND);
-		return itemstack.isEmpty() && p_28578_.is(ItemTags.MEAT);
+		return itemstack.isEmpty() && p_28578_.is(ItemTags.WOLF_FOOD);
 	}
 
 	@Override
-	protected void pickUpItem(ItemEntity p_28514_) {
+	protected void pickUpItem(ServerLevel serverLevel, ItemEntity p_28514_) {
 		if (!this.isTame()) {
 			ItemStack itemstack = p_28514_.getItem();
 			if (this.canHoldItem(itemstack)) {

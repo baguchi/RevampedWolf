@@ -75,8 +75,8 @@ public class WolfTradeEvent {
 
         public MerchantOffer getOffer(Entity p_35771_, RandomSource p_35772_) {
             int i = 2 + p_35772_.nextInt(8);
-            Optional<HolderSet.Named<Enchantment>> optional = p_35771_.registryAccess().registryOrThrow(Registries.ENCHANTMENT)
-                    .getTag(EnchantmentTags.ON_TRADED_EQUIPMENT);
+            Optional<HolderSet.Named<Enchantment>> optional = p_35771_.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+                    .get(EnchantmentTags.ON_TRADED_EQUIPMENT);
             ItemStack itemstack = EnchantmentHelper.enchantItem(
                     p_35772_, new ItemStack(this.itemStack.getItem()), i, p_35771_.registryAccess(), optional
             );
