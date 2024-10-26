@@ -19,6 +19,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.Wolf;
@@ -39,8 +40,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.function.Predicate;
-
 @Mixin(Wolf.class)
 public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHunt, IHunger {
 	private int huntCooldown;
@@ -50,7 +49,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	@Shadow
 	@Final
-	public static Predicate<LivingEntity> PREY_SELECTOR;
+	public static TargetingConditions.Selector PREY_SELECTOR;
 
 	protected WolfMixin(EntityType<? extends TamableAnimal> p_27557_, Level p_27558_) {
 		super(p_27557_, p_27558_);
@@ -82,7 +81,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
 		this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setAlertOthers());
 		this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
-		this.targetSelector.addGoal(5, new HuntTargetGoal<>(this, Animal.class, false, (p_375800_, p_375801_) -> PREY_SELECTOR.test(p_375800_)));
+		this.targetSelector.addGoal(5, new HuntTargetGoal<>(this, Animal.class, false, PREY_SELECTOR));
 		this.targetSelector.addGoal(6, new NonTameRandomTargetGoal<>(this, Turtle.class, false, Turtle.BABY_ON_LAND_SELECTOR));
 		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, false));
 		this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
