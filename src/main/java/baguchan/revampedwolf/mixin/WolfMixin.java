@@ -1,7 +1,6 @@
 package baguchan.revampedwolf.mixin;
 
 import baguchan.revampedwolf.RevampedWolf;
-import baguchan.revampedwolf.WolfConfigs;
 import baguchan.revampedwolf.api.*;
 import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
 import baguchan.revampedwolf.entity.goal.LeapAtTargetWolfGoal;
@@ -79,9 +78,8 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	@Inject(method = "<init>", at = @At("TAIL"))
 	public void onConstructor(EntityType<? extends Wolf> p_27557_, Level p_27558_, CallbackInfo info) {
 		this.setCanPickUpLoot(true);
-		if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
-			this.createInventory();
-		}
+		this.createInventory();
+
 	}
 
 	@Inject(method = "defineSynchedData", at = @At("TAIL"))
@@ -119,7 +117,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	public void mobInteract(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> callbackInfo) {
 		ItemStack itemstack = p_30412_.getItemInHand(p_30413_);
 		Item item = itemstack.getItem();
-		if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
 			if (p_30412_.isSecondaryUseActive() && this.isTame() && this.isOwnedBy(p_30412_)) {
 				if (p_30412_ instanceof IOpenWolfContainer) {
 					this.openInventory(p_30412_);
@@ -127,7 +124,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 					callbackInfo.setReturnValue(InteractionResult.SUCCESS);
 				}
 			}
-		}
+
 	}
 
 	public void openInventory(Player player) {
@@ -231,11 +228,10 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		p_213281_1_.putInt("EatTick", this.eatTick);
 		p_213281_1_.putInt("HungerTick", this.hungerTick);
 
-		if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
 			if (!this.inventory.getItem(0).isEmpty()) {
 				p_213281_1_.put("ArmorItem", this.inventory.getItem(0).save(new CompoundTag()));
 			}
-		}
+
 	}
 
 	@Inject(method = "readAdditionalSaveData", at = @At("TAIL"), cancellable = true)
@@ -245,14 +241,13 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		this.huntCooldown = p_70037_1_.getInt("HuntingCooldown");
 		this.eatTick = p_70037_1_.getInt("EatTick");
 		this.hungerTick = p_70037_1_.getInt("HungerTick");
-		if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
 			if (p_70037_1_.contains("ArmorItem", 10)) {
 				ItemStack itemstack = ItemStack.of(p_70037_1_.getCompound("ArmorItem"));
 				if (!itemstack.isEmpty() && this.isArmor(itemstack)) {
 					this.inventory.setItem(0, itemstack);
 				}
 			}
-		}
+
 		this.updateContainerEquipment();
 		this.setCanPickUpLoot(true);
 	}
@@ -301,7 +296,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	}
 
 	private void updateContainerEquipment() {
-		if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
 			if (!this.level().isClientSide) {
 				this.setDropChance(EquipmentSlot.CHEST, 0.0F);
 
@@ -339,14 +333,10 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 				}
 
 			}
-		}
+
 	}
 
 	public SlotAccess getSlot(int p_149743_) {
-		if (WolfConfigs.COMMON.disableWolfArmor.get()) {
-			return super.getSlot(p_149743_);
-		}
-
 		int i = p_149743_ - 300;
 		return i >= 0 && i < this.inventory.getContainerSize() ? SlotAccess.forContainer(this.inventory, i) : super.getSlot(p_149743_);
 	}
@@ -414,10 +404,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	}
 
 	public ItemStack getItemBySlot(EquipmentSlot p_21467_) {
-		if (WolfConfigs.COMMON.disableWolfArmor.get()) {
-			return super.getItemBySlot(p_21467_);
-		}
-
 		switch (p_21467_.getType()) {
 			case ARMOR:
 				return this.inventory.getItem(0);
@@ -433,10 +419,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 				super.setItemSlot(p_21416_, p_21417_);
 				break;
 			case ARMOR:
-				if (!WolfConfigs.COMMON.disableWolfArmor.get()) {
-
-					this.inventory.setItem(0, p_21417_);
-				}
+				this.inventory.setItem(0, p_21417_);
 		}
 	}
 

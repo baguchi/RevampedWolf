@@ -1,6 +1,8 @@
 package baguchan.revampedwolf.item;
 
+import baguchan.revampedwolf.WolfConfigs;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -20,6 +22,11 @@ public class WolfArmorItem extends Item {
 		this.toughness = 0;
 		this.knockbackResistance = 0;
 		this.texture = texture;
+	}
+
+	@Override
+	public boolean isEnabled(FeatureFlagSet p_249172_) {
+		return super.isEnabled(p_249172_) && !WolfConfigs.COMMON.disableWolfArmor.get();
 	}
 
 	@Override
