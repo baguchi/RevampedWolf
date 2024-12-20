@@ -18,14 +18,14 @@ public interface WolfEquipmentModels {
     ResourceKey<EquipmentAsset> NETHERITE = createId("netherite");
 
     static void bootstrap(BiConsumer<ResourceKey<EquipmentAsset>, EquipmentClientInfo> p_371586_) {
-        p_371586_.accept(LEATHER, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, EquipmentClientInfo.Layer.onlyIfDyed(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "wolf_armor_leather"), false))
+        p_371586_.accept(LEATHER, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, EquipmentClientInfo.Layer.onlyIfDyed(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "leather"), false))
                 .addLayers(
-                        EquipmentClientInfo.LayerType.WOLF_BODY, EquipmentClientInfo.Layer.onlyIfDyed(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "wolf_armor_leather_overlay"), true)
+                        EquipmentClientInfo.LayerType.WOLF_BODY, EquipmentClientInfo.Layer.onlyIfDyed(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "leather_overlay"), true)
                 ).build());
-        p_371586_.accept(IRON, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "wolf_armor_iron"))).build());
-        p_371586_.accept(GOLD, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "wolf_armor_gold"))).build());
-        p_371586_.accept(DIAMOND, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "wolf_armor_diamond"))).build());
-        p_371586_.accept(NETHERITE, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "wolf_armor_netherite"))).build());
+        p_371586_.accept(IRON, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "iron"))).build());
+        p_371586_.accept(GOLD, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "gold"))).build());
+        p_371586_.accept(DIAMOND, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "diamond"))).build());
+        p_371586_.accept(NETHERITE, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "netherite"))).build());
     }
 
     static ResourceKey<EquipmentAsset> createId(String p_386630_) {

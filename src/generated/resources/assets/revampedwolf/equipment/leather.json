@@ -1,0 +1,13 @@
+{
+  "layers": {
+    "wolf_body": [
+      {
+        "texture": "revampedwolf:leather"
+      },
+      {
+        "dyeable": {},
+        "texture": "revampedwolf:leather_overlay"
+      }
+    ]
+  }
+}

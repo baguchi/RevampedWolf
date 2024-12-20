@@ -1,7 +1,6 @@
 package baguchan.revampedwolf.client;
 
 import baguchan.revampedwolf.RevampedWolf;
-import baguchan.revampedwolf.client.render.WolfArmorModel;
 import baguchan.revampedwolf.client.render.layer.WolfHeldItemLayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.WolfRenderer;
@@ -18,7 +17,6 @@ public class ClientRegistrar {
 
 	@SubscribeEvent
 	public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
-		event.registerLayerDefinition(ModModelLayers.WOLF_ARMOR, WolfArmorModel::createBodyLayer);
 	}
 
 	@SubscribeEvent

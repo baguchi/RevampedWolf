@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.WolfRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.entity.animal.Wolf;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -39,9 +38,5 @@ public class WolfHeldItemLayer extends RenderLayer<WolfRenderState, WolfModel> {
 				poseStack.popPose();
 			}
 		}
-	}
-
-	public void render(PoseStack poseStack, MultiBufferSource p_117008_, int p_117009_, Wolf p_117010_, float p_117011_, float p_117012_, float p_117013_, float p_117014_, float p_117015_, float p_117016_) {
-
 	}
 }
