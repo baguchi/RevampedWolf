@@ -1,5 +1,6 @@
 package baguchan.revampedwolf.client.render.layer;
 
+import baguchan.revampedwolf.api.IRevampedWolfState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.model.HeadedModel;
@@ -10,10 +11,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.WolfRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.animal.Wolf;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -28,17 +26,16 @@ public class WolfHeldItemLayer extends RenderLayer<WolfRenderState, WolfModel> {
 
 	@Override
 	public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, WolfRenderState wolfRenderState, float v, float v1) {
-		if (this.getParentModel() instanceof HeadedModel headedModel) {
-			BakedModel bakedmodel = wolfRenderState.getMainHandItemModel();
-			if (bakedmodel != null) {
+        if (this.getParentModel() instanceof HeadedModel headedModel && wolfRenderState instanceof IRevampedWolfState revampedWolfState) {
+
+            if (!revampedWolfState.getRevampedWolf$holdItem().isEmpty()) {
 				boolean flag1 = wolfRenderState.isBaby;
 				poseStack.pushPose();
 				headedModel.getHead().translateAndRotate(poseStack);
 				float scale = flag1 ? 0.75F : 1.0F;
 				poseStack.translate(0, 0.1F * (flag1 ? 4.0F : 1.25F), (flag1 ? -0.25F : -0.5F));
 				poseStack.mulPose(Axis.XP.rotationDegrees(90.0f));
-				ItemStack itemStack = wolfRenderState.getMainHandItem();
-				this.itemInHandRenderer.render(itemStack, ItemDisplayContext.GROUND, false, poseStack, multiBufferSource, i, OverlayTexture.NO_OVERLAY, bakedmodel);
+                revampedWolfState.getRevampedWolf$holdItem().render(poseStack, multiBufferSource, i, OverlayTexture.NO_OVERLAY);
 				poseStack.popPose();
 			}
 		}

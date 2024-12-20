@@ -8,7 +8,9 @@
     "WolfMixin"
   ],
   "client": [
-    "client.WolfModelMixin"
+    "client.WolfModelMixin",
+    "client.WolfRendererMixin",
+    "client.WolfRenderStateMixin"
   ],
   "injectors": {
     "defaultRequire": 1

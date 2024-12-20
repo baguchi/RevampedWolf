@@ -16,13 +16,13 @@ import java.util.concurrent.CompletableFuture;
 @EventBusSubscriber(modid = RevampedWolf.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
+    public static void gatherData(GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-        generator.addProvider(event.includeClient(), new WolfEquipmentModelProvider(packOutput));
-        generator.addProvider(event.includeServer(), new Runner(packOutput, lookupProvider));
+        generator.addProvider(true, new WolfEquipmentModelProvider(packOutput));
+        generator.addProvider(true, new Runner(packOutput, lookupProvider));
     }
 
     public static final class Runner extends RecipeProvider.Runner {
