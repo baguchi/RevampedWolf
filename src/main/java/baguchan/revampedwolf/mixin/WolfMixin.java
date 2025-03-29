@@ -88,6 +88,24 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		callbackInfo.cancel();
 	}
 
+	@Inject(method = "getAmbientSound", at = @At("HEAD"), cancellable = true)
+	protected SoundEvent getAmbientSound(CallbackInfo callbackInfo) {
+		Wolf wolf = (Wolf) ((Object) this);
+		if (this.isAngry()) {
+			return SoundEvents.WOLF_GROWL;
+		} else if (this.random.nextInt(3) == 0) {
+			return this.isTame() && this.getHealth() < 20.0F ? SoundEvents.WOLF_WHINE : SoundEvents.WOLF_PANT;
+		} else if (!this.level().isBrightOutside() && this.random.nextFloat() < 0.1F && !this.isTame()) {
+			List<Player> list = this.level()
+					.getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(20.0, 20.0, 20.0), EntitySelector.NO_SPECTATORS);
+			if (list.isEmpty()) {
+				return SoundEvents.WOLF_HOWL;
+			}
+		} else {
+			return SoundEvents.WOLF_AMBIENT;
+		}
+	}
+	
 	@Inject(method = "mobInteract", at = @At(value = "HEAD"), cancellable = true)
 	public void mobInteract(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> cir) {
 		ItemStack itemstack = p_30412_.getItemInHand(p_30413_);
@@ -98,7 +116,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 			cir.setReturnValue(InteractionResult.SUCCESS);
 		}
 	}
-
 
 	@Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Wolf;heal(F)V", shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void mobInteractHeal(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> cir, ItemStack itemstack) {
