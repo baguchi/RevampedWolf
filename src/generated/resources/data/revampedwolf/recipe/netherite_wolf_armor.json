@@ -3,7 +3,6 @@
   "addition": "minecraft:netherite_ingot",
   "base": "revampedwolf:diamond_wolf_armor",
   "result": {
-    "count": 1,
     "id": "revampedwolf:netherite_wolf_armor"
   },
   "template": "minecraft:netherite_upgrade_smithing_template"

@@ -2,7 +2,6 @@ package baguchan.revampedwolf.registry;
 
 import baguchan.revampedwolf.RevampedWolf;
 import baguchan.revampedwolf.item.WolfArmorItem;
-import net.minecraft.world.item.AnimalArmorItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -10,9 +9,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ModItems {
 	public static final DeferredRegister.Items ITEM_REGISTRY = DeferredRegister.createItems(RevampedWolf.MODID);
 
-	public static final DeferredItem<Item> LEATHER_WOLF_ARMOR = ITEM_REGISTRY.registerItem("leather_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.LEATHER, AnimalArmorItem.BodyType.CANINE, properties));
-	public static final DeferredItem<Item> GOLD_WOLF_ARMOR = ITEM_REGISTRY.registerItem("golden_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.GOLD, AnimalArmorItem.BodyType.CANINE, properties));
-	public static final DeferredItem<Item> IRON_WOLF_ARMOR = ITEM_REGISTRY.registerItem("iron_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.IRON, AnimalArmorItem.BodyType.CANINE, properties));
-	public static final DeferredItem<Item> DIAMOND_WOLF_ARMOR = ITEM_REGISTRY.registerItem("diamond_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.DIAMOND, AnimalArmorItem.BodyType.CANINE, properties));
-	public static final DeferredItem<Item> NETHERITE_WOLF_ARMOR = ITEM_REGISTRY.registerItem("netherite_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.NETHERITE, AnimalArmorItem.BodyType.CANINE, properties.fireResistant()));
+	public static final DeferredItem<Item> LEATHER_WOLF_ARMOR = ITEM_REGISTRY.registerItem("leather_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.LEATHER, properties));
+	public static final DeferredItem<Item> GOLD_WOLF_ARMOR = ITEM_REGISTRY.registerItem("golden_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.GOLD, properties));
+	public static final DeferredItem<Item> IRON_WOLF_ARMOR = ITEM_REGISTRY.registerItem("iron_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.IRON, properties));
+	public static final DeferredItem<Item> DIAMOND_WOLF_ARMOR = ITEM_REGISTRY.registerItem("diamond_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.DIAMOND, properties));
+	public static final DeferredItem<Item> NETHERITE_WOLF_ARMOR = ITEM_REGISTRY.registerItem("netherite_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.NETHERITE, properties.fireResistant()));
 }

@@ -22,8 +22,8 @@ import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Turtle;
-import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.animal.horse.Llama;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.player.Player;
@@ -100,8 +100,9 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	}
 
 
-	@Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Wolf;heal(F)V", shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void mobInteractHeal(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> cir, ItemStack itemstack) {
+	@Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/wolf/Wolf;heal(F)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
+	public void mobInteractHeal(Player p_406380_, InteractionHand p_406261_, CallbackInfoReturnable<InteractionResult> cir) {
+		ItemStack itemstack = p_406380_.getItemInHand(p_406261_);
 
 		FoodProperties foodproperties = itemstack.get(DataComponents.FOOD);
 		float f = foodproperties != null ? (float) foodproperties.nutrition() : 1.0F;
@@ -198,7 +199,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 				this.spitOutItem(this.getItemBySlot(EquipmentSlot.MAINHAND));
 				this.onItemPickup(p_28514_);
 				this.setItemSlot(EquipmentSlot.MAINHAND, itemstack.split(1));
-				this.handDropChances[EquipmentSlot.MAINHAND.getIndex()] = 2.0F;
+				this.setDropChance(EquipmentSlot.MAINHAND, 2.0F);
 				this.take(p_28514_, itemstack.getCount());
 				p_28514_.discard();
 				this.eatTick = 0;
@@ -215,9 +216,9 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	@Inject(method = "readAdditionalSaveData", at = @At("TAIL"), cancellable = true)
 	public void readAdditionalSaveData(CompoundTag p_70037_1_, CallbackInfo callbackInfo) {
-		this.huntCooldown = p_70037_1_.getInt("HuntingCooldown");
-		this.eatTick = p_70037_1_.getInt("EatTick");
-		this.hungerTick = p_70037_1_.getInt("HungerTick");
+		this.huntCooldown = p_70037_1_.getIntOr("HuntingCooldown", 0);
+		this.eatTick = p_70037_1_.getIntOr("EatTick", 0);
+		this.hungerTick = p_70037_1_.getIntOr("HungerTick", 0);
 		this.setCanPickUpLoot(true);
 	}
 

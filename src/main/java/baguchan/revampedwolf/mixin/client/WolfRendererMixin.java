@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.entity.AgeableMobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.WolfRenderer;
 import net.minecraft.client.renderer.entity.state.WolfRenderState;
-import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,10 +20,10 @@ public abstract class WolfRendererMixin extends AgeableMobRenderer<Wolf, WolfRen
     }
 
 
-    @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/animal/Wolf;Lnet/minecraft/client/renderer/entity/state/WolfRenderState;F)V", at = @At("TAIL"))
+    @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/animal/wolf/Wolf;Lnet/minecraft/client/renderer/entity/state/WolfRenderState;F)V", at = @At("TAIL"))
     public void extractRenderState(Wolf p_363274_, WolfRenderState p_363549_, float p_362105_, CallbackInfo ci) {
         if (p_363549_ instanceof IRevampedWolfState revampedWolfState) {
-            this.itemModelResolver.updateForLiving(revampedWolfState.getRevampedWolf$holdItem(), p_363274_.getMainHandItem(), ItemDisplayContext.GROUND, false, p_363274_);
+            this.itemModelResolver.updateForLiving(revampedWolfState.getRevampedWolf$holdItem(), p_363274_.getMainHandItem(), ItemDisplayContext.GROUND, p_363274_);
             revampedWolfState.setRevampedWolf$holdItem(revampedWolfState.getRevampedWolf$holdItem());
         }
     }
