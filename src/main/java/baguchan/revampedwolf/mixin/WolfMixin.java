@@ -8,7 +8,6 @@ import baguchan.revampedwolf.entity.goal.MoveToMeatGoal;
 import baguchan.revampedwolf.entity.goal.WolfAvoidEntityGoal;
 import baguchan.revampedwolf.item.WolfArmorItem;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
@@ -31,6 +30,8 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -208,17 +209,17 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	}
 
 	@Inject(method = "addAdditionalSaveData", at = @At("TAIL"), cancellable = true)
-	public void addAdditionalSaveData(CompoundTag p_213281_1_, CallbackInfo callbackInfo) {
-		p_213281_1_.putInt("HuntingCooldown", this.huntCooldown);
-		p_213281_1_.putInt("EatTick", this.eatTick);
-		p_213281_1_.putInt("HungerTick", this.hungerTick);
+	public void addAdditionalSaveData(ValueOutput p_422504_, CallbackInfo ci) {
+		p_422504_.putInt("HuntingCooldown", this.huntCooldown);
+		p_422504_.putInt("EatTick", this.eatTick);
+		p_422504_.putInt("HungerTick", this.hungerTick);
 	}
 
 	@Inject(method = "readAdditionalSaveData", at = @At("TAIL"), cancellable = true)
-	public void readAdditionalSaveData(CompoundTag p_70037_1_, CallbackInfo callbackInfo) {
-		this.huntCooldown = p_70037_1_.getIntOr("HuntingCooldown", 0);
-		this.eatTick = p_70037_1_.getIntOr("EatTick", 0);
-		this.hungerTick = p_70037_1_.getIntOr("HungerTick", 0);
+	public void readAdditionalSaveData(ValueInput p_421669_, CallbackInfo ci) {
+		this.huntCooldown = p_421669_.getIntOr("HuntingCooldown", 0);
+		this.eatTick = p_421669_.getIntOr("EatTick", 0);
+		this.hungerTick = p_421669_.getIntOr("HungerTick", 0);
 		this.setCanPickUpLoot(true);
 	}
 
