@@ -296,43 +296,60 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	}
 
 	private void updateContainerEquipment() {
-			if (!this.level().isClientSide) {
-				this.setDropChance(EquipmentSlot.CHEST, 0.0F);
+		if (!this.level().isClientSide) {
+			this.setDropChance(EquipmentSlot.CHEST, 0.0F);
 
-				ItemStack stack = this.inventory.getItem(0);
-				if (this.isArmor(stack)) {
-					AttributeInstance armor = this.getAttribute(Attributes.ARMOR);
-					if (armor != null) {
-						armor.removeModifier(ARMOR_MODIFIER_UUID);
-						int i = ((WolfArmorItem) stack.getItem()).getDefense();
-						if (i != 0) {
-							armor.addTransientModifier(new AttributeModifier(ARMOR_MODIFIER_UUID, "Wolf armor bonus", i, AttributeModifier.Operation.ADDITION));
-						}
-
+			ItemStack stack = this.inventory.getItem(0);
+			if (this.isArmor(stack)) {
+				AttributeInstance armor = this.getAttribute(Attributes.ARMOR);
+				if (armor != null) {
+					armor.removeModifier(ARMOR_MODIFIER_UUID);
+					int i = ((WolfArmorItem) stack.getItem()).getDefense();
+					if (i != 0) {
+						armor.addTransientModifier(new AttributeModifier(ARMOR_MODIFIER_UUID, "Wolf armor bonus", i, AttributeModifier.Operation.ADDITION));
 					}
 
-					AttributeInstance toughness = this.getAttribute(Attributes.ARMOR_TOUGHNESS);
-					if (toughness != null) {
-						toughness.removeModifier(TOUGHNESS_ARMOR_MODIFIER_UUID);
+				}
 
-						float i = ((WolfArmorItem) stack.getItem()).getToughness();
-						if (i != 0) {
-							toughness.addTransientModifier(new AttributeModifier(TOUGHNESS_ARMOR_MODIFIER_UUID, "Wolf Toughness armor bonus", i, AttributeModifier.Operation.ADDITION));
-						}
-					}
+				AttributeInstance toughness = this.getAttribute(Attributes.ARMOR_TOUGHNESS);
+				if (toughness != null) {
+					toughness.removeModifier(TOUGHNESS_ARMOR_MODIFIER_UUID);
 
-					AttributeInstance knockback_resistance = this.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
-					if (knockback_resistance != null) {
-						knockback_resistance.removeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID);
-
-						float i = ((WolfArmorItem) stack.getItem()).getToughness();
-						if (i != 0) {
-							knockback_resistance.addTransientModifier(new AttributeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID, "Wolf KnockBack Resistance bonus", i, AttributeModifier.Operation.ADDITION));
-						}
+					float i = ((WolfArmorItem) stack.getItem()).getToughness();
+					if (i != 0) {
+						toughness.addTransientModifier(new AttributeModifier(TOUGHNESS_ARMOR_MODIFIER_UUID, "Wolf Toughness armor bonus", i, AttributeModifier.Operation.ADDITION));
 					}
 				}
 
+				AttributeInstance knockback_resistance = this.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+				if (knockback_resistance != null) {
+					knockback_resistance.removeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID);
+
+					float i = ((WolfArmorItem) stack.getItem()).getToughness();
+					if (i != 0) {
+						knockback_resistance.addTransientModifier(new AttributeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID, "Wolf KnockBack Resistance bonus", i, AttributeModifier.Operation.ADDITION));
+					}
+				}
+			} else {
+				//reset
+				AttributeInstance armor = this.getAttribute(Attributes.ARMOR);
+				if (armor != null) {
+					armor.removeModifier(ARMOR_MODIFIER_UUID);
+				}
+
+				AttributeInstance toughness = this.getAttribute(Attributes.ARMOR_TOUGHNESS);
+				if (toughness != null) {
+					toughness.removeModifier(TOUGHNESS_ARMOR_MODIFIER_UUID);
+				}
+
+				AttributeInstance knockback_resistance = this.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+				if (knockback_resistance != null) {
+					knockback_resistance.removeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID);
+				}
+
 			}
+
+		}
 
 	}
 
