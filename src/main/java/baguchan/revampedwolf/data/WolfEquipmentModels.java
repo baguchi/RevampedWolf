@@ -16,6 +16,7 @@ public interface WolfEquipmentModels {
     ResourceKey<EquipmentAsset> GOLD = createId("gold");
     ResourceKey<EquipmentAsset> DIAMOND = createId("diamond");
     ResourceKey<EquipmentAsset> NETHERITE = createId("netherite");
+    ResourceKey<EquipmentAsset> COPPER = createId("copper");
 
     static void bootstrap(BiConsumer<ResourceKey<EquipmentAsset>, EquipmentClientInfo> p_371586_) {
         p_371586_.accept(LEATHER, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, EquipmentClientInfo.Layer.onlyIfDyed(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "leather"), false))
@@ -26,6 +27,7 @@ public interface WolfEquipmentModels {
         p_371586_.accept(GOLD, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "gold"))).build());
         p_371586_.accept(DIAMOND, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "diamond"))).build());
         p_371586_.accept(NETHERITE, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "netherite"))).build());
+        p_371586_.accept(COPPER, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "copper"))).build());
     }
 
     static ResourceKey<EquipmentAsset> createId(String p_386630_) {

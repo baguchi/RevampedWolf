@@ -22,15 +22,23 @@ public interface WolfArmorMaterials {
         p_371378_.put(ArmorType.LEGGINGS, 5);
         p_371378_.put(ArmorType.CHESTPLATE, 6);
         p_371378_.put(ArmorType.HELMET, 2);
-        p_371378_.put(ArmorType.BODY, 14);
+        p_371378_.put(ArmorType.BODY, 16);
     }), 9, SoundEvents.ARMOR_EQUIP_IRON, 0.0F, 0.0F, ItemTags.REPAIRS_IRON_ARMOR, WolfEquipmentModels.IRON);
     ArmorMaterial GOLD = new ArmorMaterial(7, Util.make(new EnumMap<>(ArmorType.class), p_371284_ -> {
         p_371284_.put(ArmorType.BOOTS, 1);
         p_371284_.put(ArmorType.LEGGINGS, 3);
         p_371284_.put(ArmorType.CHESTPLATE, 5);
         p_371284_.put(ArmorType.HELMET, 2);
-        p_371284_.put(ArmorType.BODY, 10);
+        p_371284_.put(ArmorType.BODY, 11);
     }), 25, SoundEvents.ARMOR_EQUIP_GOLD, 0.0F, 0.0F, ItemTags.REPAIRS_GOLD_ARMOR, WolfEquipmentModels.GOLD);
+    /*ArmorMaterial COPPER = new ArmorMaterial(11, Util.make(new EnumMap<>(ArmorType.class), p_371284_ -> {
+        p_371284_.put(ArmorType.BOOTS, 1);
+        p_371284_.put(ArmorType.LEGGINGS, 3);
+        p_371284_.put(ArmorType.CHESTPLATE, 4);
+        p_371284_.put(ArmorType.HELMET, 2);
+        p_371284_.put(ArmorType.BODY, 10);
+    }), 8, SoundEvents.ARMOR_EQUIP_COPPER, 0.0F, 0.0F, ItemTags.REPAIRS_COPPER_ARMOR, WolfEquipmentModels.COPPER);
+*/
     ArmorMaterial DIAMOND = new ArmorMaterial(33, Util.make(new EnumMap<>(ArmorType.class), p_371445_ -> {
         p_371445_.put(ArmorType.BOOTS, 3);
         p_371445_.put(ArmorType.LEGGINGS, 6);
