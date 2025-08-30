@@ -14,4 +14,5 @@ public class ModItems {
 	public static final DeferredItem<Item> IRON_WOLF_ARMOR = ITEM_REGISTRY.registerItem("iron_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.IRON, properties));
 	public static final DeferredItem<Item> DIAMOND_WOLF_ARMOR = ITEM_REGISTRY.registerItem("diamond_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.DIAMOND, properties));
 	public static final DeferredItem<Item> NETHERITE_WOLF_ARMOR = ITEM_REGISTRY.registerItem("netherite_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.NETHERITE, properties.fireResistant()));
+    //public static final DeferredItem<Item> COPPER_WOLF_ARMOR = ITEM_REGISTRY.registerItem("copper_wolf_armor", (properties) -> new WolfArmorItem(WolfArmorMaterials.COPPER, properties.fireResistant()));
 }
