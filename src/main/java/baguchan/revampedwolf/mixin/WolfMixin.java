@@ -6,7 +6,6 @@ import baguchan.revampedwolf.entity.goal.HuntTargetGoal;
 import baguchan.revampedwolf.entity.goal.LeapAtTargetWolfGoal;
 import baguchan.revampedwolf.entity.goal.MoveToMeatGoal;
 import baguchan.revampedwolf.entity.goal.WolfAvoidEntityGoal;
-import baguchan.revampedwolf.item.WolfArmorItem;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -87,17 +86,6 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, false));
 		this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
 		callbackInfo.cancel();
-	}
-
-	@Inject(method = "mobInteract", at = @At(value = "HEAD"), cancellable = true)
-	public void mobInteract(Player p_30412_, InteractionHand p_30413_, CallbackInfoReturnable<InteractionResult> cir) {
-		ItemStack itemstack = p_30412_.getItemInHand(p_30413_);
-		Item item = itemstack.getItem();
-		if (itemstack.getItem() instanceof WolfArmorItem && this.isOwnedBy(p_30412_) && !this.isWearingBodyArmor() && !this.isBaby()) {
-			this.setBodyArmorItem(itemstack.copyWithCount(1));
-			itemstack.consume(1, p_30412_);
-			cir.setReturnValue(InteractionResult.SUCCESS);
-		}
 	}
 
 
