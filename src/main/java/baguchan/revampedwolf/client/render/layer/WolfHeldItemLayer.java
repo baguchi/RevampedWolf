@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.WolfModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -21,7 +21,7 @@ public class WolfHeldItemLayer extends RenderLayer<WolfRenderState, WolfModel> {
 	}
 
 	@Override
-	public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, WolfRenderState wolfRenderState, float v, float v1) {
+    public void submit(PoseStack poseStack, SubmitNodeCollector multiBufferSource, int i, WolfRenderState wolfRenderState, float v, float v1) {
         if (this.getParentModel() instanceof HeadedModel headedModel && wolfRenderState instanceof IRevampedWolfState revampedWolfState) {
 
             if (!revampedWolfState.getRevampedWolf$holdItem().isEmpty()) {
@@ -31,7 +31,7 @@ public class WolfHeldItemLayer extends RenderLayer<WolfRenderState, WolfModel> {
 				float scale = flag1 ? 0.75F : 1.0F;
 				poseStack.translate(0, 0.1F * (flag1 ? 4.0F : 1.25F), (flag1 ? -0.25F : -0.5F));
 				poseStack.mulPose(Axis.XP.rotationDegrees(90.0f));
-                revampedWolfState.getRevampedWolf$holdItem().render(poseStack, multiBufferSource, i, OverlayTexture.NO_OVERLAY);
+                revampedWolfState.getRevampedWolf$holdItem().submit(poseStack, multiBufferSource, i, OverlayTexture.NO_OVERLAY, wolfRenderState.outlineColor);
 				poseStack.popPose();
 			}
 		}

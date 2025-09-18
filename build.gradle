@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.96'
+    id 'net.neoforged.moddev' version '2.0.107'
 }
 
 version = mod_version
@@ -98,6 +98,14 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {
     maven {
         url = "https://api.modrinth.com/maven"
+    }
+    maven {
+        name = "Maven for PR #2639" // https://github.com/neoforged/NeoForge/pull/2639
+        url = uri("https://prmaven.neoforged.net/NeoForge/pr2639")
+        content {
+            includeModule("net.neoforged", "neoforge")
+            includeModule("net.neoforged", "testframework")
+        }
     }
 }
 

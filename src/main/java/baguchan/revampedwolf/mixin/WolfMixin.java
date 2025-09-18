@@ -14,6 +14,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
@@ -103,7 +104,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 
 	@Inject(method = "aiStep", at = @At("HEAD"), cancellable = true)
 	public void aiStep(CallbackInfo callbackInfo) {
-		if (!this.level().isClientSide && this.isAlive()) {
+        if (!this.level().isClientSide() && this.isAlive()) {
 			if (this.hungerTick > 0) {
 				this.hungerTick--;
 			}
@@ -155,7 +156,7 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 	}
 
 	private void spitOutItem(ItemStack p_28602_) {
-		if (!p_28602_.isEmpty() && !this.level().isClientSide) {
+        if (!p_28602_.isEmpty() && !this.level().isClientSide()) {
 			ItemEntity itementity = new ItemEntity(this.level(), this.getX() + this.getLookAngle().x, this.getY() + 1.0D, this.getZ() + this.getLookAngle().z, p_28602_);
 			itementity.setPickUpDelay(40);
 			itementity.setThrower(this);
@@ -211,13 +212,14 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		this.setCanPickUpLoot(true);
 	}
 
-	@Override
-	public boolean killedEntity(ServerLevel p_216988_, LivingEntity p_216989_) {
-		this.setHuntCooldown(1200);
-		return super.killedEntity(p_216988_, p_216989_);
-	}
 
-	@Override
+    @Override
+    public boolean killedEntity(ServerLevel p_216988_, LivingEntity p_216989_, DamageSource p_432749_) {
+        this.setHuntCooldown(1200);
+        return super.killedEntity(p_216988_, p_216989_, p_432749_);
+    }
+
+    @Override
 	public void setHuntCooldown(int cooldown) {
 		this.huntCooldown = cooldown;
 	}

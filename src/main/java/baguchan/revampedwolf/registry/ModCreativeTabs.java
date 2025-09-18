@@ -16,6 +16,7 @@ public class ModCreativeTabs {
 			event.accept(ModItems.GOLD_WOLF_ARMOR.get());
 			event.accept(ModItems.DIAMOND_WOLF_ARMOR.get());
 			event.accept(ModItems.NETHERITE_WOLF_ARMOR.get());
+            event.accept(ModItems.COPPER_WOLF_ARMOR.get());
 		}
 	}
 }

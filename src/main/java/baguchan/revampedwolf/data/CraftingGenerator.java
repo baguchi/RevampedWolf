@@ -45,6 +45,12 @@ public class CraftingGenerator extends RecipeProvider {
                 .define('I', Items.DIAMOND)
                 .unlockedBy("has_item", has(Items.DIAMOND))
                 .save(this.output);
+        ShapedRecipeBuilder.shaped(lookup, RecipeCategory.COMBAT, ModItems.COPPER_WOLF_ARMOR.get(), 1)
+                .pattern(" II")
+                .pattern("I I")
+                .define('I', Items.COPPER_INGOT)
+                .unlockedBy("has_item", has(Items.COPPER_INGOT))
+                .save(this.output);
 
         SmithingTransformRecipeBuilder.smithing(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), Ingredient.of(ModItems.DIAMOND_WOLF_ARMOR.get()), Ingredient.of(Items.NETHERITE_INGOT), RecipeCategory.COMBAT, ModItems.NETHERITE_WOLF_ARMOR.get()).unlocks("has_item", has(Items.NETHERITE_INGOT)).save(this.output, prefix("netherite_wolf_armor"));
     }
