@@ -29,7 +29,7 @@ public interface WolfArmorMaterials {
         p_371284_.put(ArmorType.LEGGINGS, 3);
         p_371284_.put(ArmorType.CHESTPLATE, 5);
         p_371284_.put(ArmorType.HELMET, 2);
-        p_371284_.put(ArmorType.BODY, 11);
+        p_371284_.put(ArmorType.BODY, 12);
     }), 25, SoundEvents.ARMOR_EQUIP_GOLD, 0.0F, 0.0F, ItemTags.REPAIRS_GOLD_ARMOR, WolfEquipmentModels.GOLD);
     ArmorMaterial COPPER = new ArmorMaterial(11, Util.make(new EnumMap<>(ArmorType.class), p_371284_ -> {
         p_371284_.put(ArmorType.BOOTS, 1);
