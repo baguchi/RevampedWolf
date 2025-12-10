@@ -7,11 +7,12 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -73,7 +74,8 @@ public class WolfTradeEvent {
             this.priceMultiplier = p_35763_;
         }
 
-        public MerchantOffer getOffer(Entity p_35771_, RandomSource p_35772_) {
+        @Override
+        public MerchantOffer getOffer(ServerLevel serverLevel, Entity p_35771_, RandomSource p_35772_) {
             int i = 2 + p_35772_.nextInt(8);
             Optional<HolderSet.Named<Enchantment>> optional = p_35771_.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
                     .get(EnchantmentTags.ON_TRADED_EQUIPMENT);

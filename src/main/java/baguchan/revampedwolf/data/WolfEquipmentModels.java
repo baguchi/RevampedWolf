@@ -2,8 +2,8 @@ package baguchan.revampedwolf.data;
 
 import baguchan.revampedwolf.RevampedWolf;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 
 import java.util.function.BiConsumer;
@@ -19,18 +19,18 @@ public interface WolfEquipmentModels {
     ResourceKey<EquipmentAsset> COPPER = createId("copper");
 
     static void bootstrap(BiConsumer<ResourceKey<EquipmentAsset>, EquipmentClientInfo> p_371586_) {
-        p_371586_.accept(LEATHER, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, EquipmentClientInfo.Layer.onlyIfDyed(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "leather"), false))
+        p_371586_.accept(LEATHER, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, EquipmentClientInfo.Layer.onlyIfDyed(Identifier.fromNamespaceAndPath(RevampedWolf.MODID, "leather"), false))
                 .addLayers(
-                        EquipmentClientInfo.LayerType.WOLF_BODY, EquipmentClientInfo.Layer.onlyIfDyed(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "leather_overlay"), true)
+                        EquipmentClientInfo.LayerType.WOLF_BODY, EquipmentClientInfo.Layer.onlyIfDyed(Identifier.fromNamespaceAndPath(RevampedWolf.MODID, "leather_overlay"), true)
                 ).build());
-        p_371586_.accept(IRON, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "iron"))).build());
-        p_371586_.accept(GOLD, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "gold"))).build());
-        p_371586_.accept(DIAMOND, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "diamond"))).build());
-        p_371586_.accept(NETHERITE, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "netherite"))).build());
-        p_371586_.accept(COPPER, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, "copper"))).build());
+        p_371586_.accept(IRON, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(Identifier.fromNamespaceAndPath(RevampedWolf.MODID, "iron"))).build());
+        p_371586_.accept(GOLD, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(Identifier.fromNamespaceAndPath(RevampedWolf.MODID, "gold"))).build());
+        p_371586_.accept(DIAMOND, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(Identifier.fromNamespaceAndPath(RevampedWolf.MODID, "diamond"))).build());
+        p_371586_.accept(NETHERITE, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(Identifier.fromNamespaceAndPath(RevampedWolf.MODID, "netherite"))).build());
+        p_371586_.accept(COPPER, EquipmentClientInfo.builder().addLayers(EquipmentClientInfo.LayerType.WOLF_BODY, new EquipmentClientInfo.Layer(Identifier.fromNamespaceAndPath(RevampedWolf.MODID, "copper"))).build());
     }
 
     static ResourceKey<EquipmentAsset> createId(String p_386630_) {
-        return ResourceKey.create(ROOT_ID, ResourceLocation.fromNamespaceAndPath(RevampedWolf.MODID, p_386630_));
+        return ResourceKey.create(ROOT_ID, Identifier.fromNamespaceAndPath(RevampedWolf.MODID, p_386630_));
     }
 }

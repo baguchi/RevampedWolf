@@ -1,7 +1,7 @@
 package baguchan.revampedwolf;
 
 import baguchan.revampedwolf.registry.ModItems;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -33,7 +33,7 @@ public class RevampedWolf {
 
     }
 
-    public static ResourceLocation prefix(String name) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, name.toLowerCase(Locale.ROOT));
+    public static Identifier prefix(String name) {
+        return Identifier.fromNamespaceAndPath(MODID, name.toLowerCase(Locale.ROOT));
     }
 }

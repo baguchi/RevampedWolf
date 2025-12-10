@@ -2,7 +2,7 @@ package baguchan.revampedwolf.entity.goal;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.world.entity.animal.horse.Llama;
+import net.minecraft.world.entity.animal.equine.Llama;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 
 public class WolfAvoidEntityGoal<T extends LivingEntity> extends AvoidEntityGoal<T> {

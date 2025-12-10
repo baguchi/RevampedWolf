@@ -1,7 +1,7 @@
 package baguchan.revampedwolf.mixin.client;
 
 import baguchan.revampedwolf.api.IRevampedWolfState;
-import net.minecraft.client.model.WolfModel;
+import net.minecraft.client.model.animal.wolf.WolfModel;
 import net.minecraft.client.renderer.entity.AgeableMobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.WolfRenderer;
