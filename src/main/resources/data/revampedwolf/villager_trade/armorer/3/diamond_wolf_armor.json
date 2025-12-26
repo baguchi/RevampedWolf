@@ -1,0 +1,13 @@
+{
+  "gives": {
+    "count": 1,
+    "id": "revampedwolf:diamond_wolf_armor"
+  },
+  "max_uses": 6.0,
+  "reputation_discount": 0.2,
+  "wants": {
+    "count": 8.0,
+    "id": "minecraft:emerald"
+  },
+  "xp": 12.0
+}

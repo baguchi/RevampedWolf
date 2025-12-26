@@ -13,7 +13,6 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.*;
@@ -38,8 +37,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(Wolf.class)
 public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHunt, IHunger {
@@ -89,17 +86,16 @@ public abstract class WolfMixin extends TamableAnimal implements NeutralMob, IHu
 		callbackInfo.cancel();
 	}
 
-
-	@Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/wolf/Wolf;heal(F)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
-	public void mobInteractHeal(Player p_406380_, InteractionHand p_406261_, CallbackInfoReturnable<InteractionResult> cir) {
-		ItemStack itemstack = p_406380_.getItemInHand(p_406261_);
+	@Override
+	protected void feed(Player player, InteractionHand hand, ItemStack itemStack, float healingFactor, float defaultHeal) {
+		ItemStack itemstack = player.getItemInHand(hand);
 
 		FoodProperties foodproperties = itemstack.get(DataComponents.FOOD);
 		float f = foodproperties != null ? (float) foodproperties.nutrition() : 1.0F;
 		float f2 = foodproperties != null ? (float) foodproperties.saturation() : 0.1F;
+		this.saturation = Mth.clamp(this.saturation + f * f2 * healingFactor, 0, 20);
 
-
-		this.saturation = Mth.clamp(this.saturation + f * f2 * 2.0F, 0, 20);
+		super.feed(player, hand, itemStack, healingFactor, defaultHeal);
 	}
 
 	@Inject(method = "aiStep", at = @At("HEAD"), cancellable = true)
