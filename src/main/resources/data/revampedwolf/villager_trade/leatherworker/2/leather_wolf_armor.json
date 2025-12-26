@@ -17,7 +17,7 @@
     {
       "function": "minecraft:filtered",
       "item_filter": {
-        "items": "revamped_wolf:leather_wolf_armor",
+        "items": "revampedwolf:leather_wolf_armor",
         "predicates": {
           "minecraft:dyed_color": {}
         }
@@ -29,7 +29,7 @@
   ],
   "gives": {
     "count": 1,
-    "id": "revamped_wolf:leather_wolf_armor"
+    "id": "revampedwolf:leather_wolf_armor"
   },
   "max_uses": 10.0,
   "reputation_discount": 0.05,
