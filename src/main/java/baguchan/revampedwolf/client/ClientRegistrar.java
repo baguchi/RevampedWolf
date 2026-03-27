@@ -2,7 +2,6 @@ package baguchan.revampedwolf.client;
 
 import baguchan.revampedwolf.RevampedWolf;
 import baguchan.revampedwolf.client.render.layer.WolfHeldItemLayer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.WolfRenderer;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.api.distmarker.Dist;
@@ -20,7 +19,7 @@ public class ClientRegistrar {
 	@SubscribeEvent
 	public static void registerEntityRenders(EntityRenderersEvent.AddLayers event) {
 		if (event.getRenderer(EntityType.WOLF) instanceof WolfRenderer r) {
-			((WolfRenderer) r).addLayer(new WolfHeldItemLayer((WolfRenderer) r, Minecraft.getInstance().getItemRenderer()));
+			r.addLayer(new WolfHeldItemLayer(r));
 		}
 	}
 }

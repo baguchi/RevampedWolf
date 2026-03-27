@@ -6,18 +6,14 @@ import com.mojang.math.Axis;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.animal.wolf.WolfModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.WolfRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
 public class WolfHeldItemLayer extends RenderLayer<WolfRenderState, WolfModel> {
-	private final ItemRenderer itemInHandRenderer;
-
-	public WolfHeldItemLayer(RenderLayerParent<WolfRenderState, WolfModel> p_116994_, ItemRenderer p_234839_) {
+	public WolfHeldItemLayer(RenderLayerParent<WolfRenderState, WolfModel> p_116994_) {
 		super(p_116994_);
-		this.itemInHandRenderer = p_234839_;
 	}
 
 	@Override
