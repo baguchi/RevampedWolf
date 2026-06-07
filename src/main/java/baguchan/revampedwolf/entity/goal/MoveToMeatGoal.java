@@ -15,6 +15,7 @@ public class MoveToMeatGoal extends Goal {
 		return p_213616_0_.getItem().is(ItemTags.MEAT);
 	};
 	private final TamableAnimal mob;
+	private ItemEntity itemEntity;
 
 	public MoveToMeatGoal(TamableAnimal p_i50572_2_) {
 		this.mob = p_i50572_2_;
@@ -25,7 +26,8 @@ public class MoveToMeatGoal extends Goal {
 		if (!this.mob.isTame() && this.mob instanceof IHunger && ((IHunger) this.mob).getHunger() <= 0) {
 			List<ItemEntity> list = this.mob.level().getEntitiesOfClass(ItemEntity.class, this.mob.getBoundingBox().inflate(8.0D, 4.0D, 8.0D), ALLOWED_ITEMS);
 			if (!list.isEmpty() && this.mob.hasLineOfSight(list.get(0))) {
-				return this.mob.getNavigation().moveTo(list.get(0), (double) 1.1F);
+				this.itemEntity = list.get(0);
+				return this.itemEntity != null;
 			}
 		}
 
@@ -37,6 +39,10 @@ public class MoveToMeatGoal extends Goal {
 		super.start();
 		if (this.mob instanceof IHunger) {
 			((IHunger) this.mob).setHunger(1200);
+		}
+
+		if (this.itemEntity != null) {
+			this.mob.getNavigation().moveTo(this.itemEntity, 1.1F);
 		}
 	}
 }
