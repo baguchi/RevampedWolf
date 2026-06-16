@@ -76,8 +76,8 @@ public class LeapAtTargetWolfGoal extends Goal {
         if (blockpos != null) {
             BlockState blockstate = this.mob.level().getBlockState(blockpos.below());
             if (this.mob.getType().isBlockDangerous(blockstate)) {
-            } else if (!hasLineOfSight(this.mob, blockpos.getCenter())
-                    && !hasLineOfSight(this.mob, blockpos.above(4).getCenter())) {
+            } else if (!hasLineOfSight(this.mob, Vec3.atCenterOf(blockpos))
+                    && !hasLineOfSight(this.mob, Vec3.atCenterOf(blockpos.above(4)))) {
             } else {
                 Vec3 vec32 = calculateOptimalJumpVector(this.mob, this.mob.getRandom(), Vec3.atBottomCenterOf(blockpos)).orElse(null);
                 if (vec32 == null) {
