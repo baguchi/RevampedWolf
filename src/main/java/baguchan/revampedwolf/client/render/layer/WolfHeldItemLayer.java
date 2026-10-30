@@ -25,7 +25,7 @@ public class WolfHeldItemLayer extends RenderLayer<WolfRenderState, WolfModel> {
 				poseStack.pushPose();
 				headedModel.getHead().translateAndRotate(poseStack);
 				float scale = flag1 ? 0.75F : 1.0F;
-				poseStack.mulPose(Axis.XP.rotationDegrees(90.0f));
+				poseStack.rotateDegrees(Axis.XP, 90.0f);
 				poseStack.translate(0, (flag1 ? -0.3F : -0.45F), (flag1 ? -0.05F : -0.15F));
                 revampedWolfState.getRevampedWolf$holdItem().submit(poseStack, multiBufferSource, i, OverlayTexture.NO_OVERLAY, wolfRenderState.outlineColor);
 				poseStack.popPose();
