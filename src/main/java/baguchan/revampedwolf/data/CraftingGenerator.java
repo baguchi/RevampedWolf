@@ -5,14 +5,14 @@ import baguchan.revampedwolf.registry.ModItems;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
+import net.minecraft.data.recipes.*;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.DyeRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 
@@ -58,6 +58,10 @@ public class CraftingGenerator extends RecipeProvider {
                 .save(this.output);
         dyedItem(ModItems.LEATHER_WOLF_ARMOR.get(), "dyed_wolf_armor");
         SmithingTransformRecipeBuilder.smithing(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), Ingredient.of(ModItems.DIAMOND_WOLF_ARMOR.get()), Ingredient.of(Items.NETHERITE_INGOT), RecipeCategory.COMBAT, ModItems.NETHERITE_WOLF_ARMOR.get()).unlocks("has_item", has(Items.NETHERITE_INGOT)).save(this.output, prefix("netherite_wolf_armor"));
+    }
+
+    protected void dyedItem(Item target, String group) {
+        CustomCraftingRecipeBuilder.customCrafting(RecipeCategory.MISC, (commonInfo, bookInfo) -> new DyeRecipe(commonInfo, bookInfo, Ingredient.of(target), this.tag(ItemTags.DYES), new ItemStackTemplate(target))).unlockedBy(getHasName(target), this.has(target)).group(group).save(this.output, prefix(getItemName(target) + "_dyed"));
     }
 
     protected ResourceKey<Recipe<?>> prefix(String name) {

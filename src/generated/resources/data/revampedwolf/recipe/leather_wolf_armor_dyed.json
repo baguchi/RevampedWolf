@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_dye",
+  "dye": "#minecraft:dyes",
+  "group": "dyed_wolf_armor",
+  "result": {
+    "id": "revampedwolf:leather_wolf_armor"
+  },
+  "target": "revampedwolf:leather_wolf_armor"
+}
