@@ -25,7 +25,7 @@ public class RevampedWolf {
         }
         modEventBus.addListener(this::setup);
         ModItems.ITEM_REGISTRY.register(modEventBus);
-        modContainer.registerConfig(ModConfig.Type.COMMON, WolfConfig.COMMON_SPEC);
+        modContainer.registerConfig(ModConfig.Type.LOCAL, WolfConfig.COMMON_SPEC);
     }
 
     private void setup(final FMLCommonSetupEvent event) {
