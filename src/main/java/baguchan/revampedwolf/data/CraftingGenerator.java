@@ -2,9 +2,14 @@ package baguchan.revampedwolf.data;
 
 import baguchan.revampedwolf.RevampedWolf;
 import baguchan.revampedwolf.registry.ModItems;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.recipes.*;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -12,13 +17,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 
 public class CraftingGenerator extends RecipeProvider {
-    public CraftingGenerator(HolderLookup.Provider lookupProvider, RecipeOutput output) {
-        super(lookupProvider, output);
+    public CraftingGenerator(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override
     protected void buildRecipes() {
-        HolderLookup<Item> lookup = this.registries.lookupOrThrow(Registries.ITEM);
+        HolderGetter<Item> lookup = this.items;
 
 
         ShapedRecipeBuilder.shaped(lookup, RecipeCategory.COMBAT, ModItems.LEATHER_WOLF_ARMOR.get(), 1)

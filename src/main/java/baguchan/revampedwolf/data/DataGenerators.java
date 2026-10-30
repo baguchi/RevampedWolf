@@ -4,8 +4,6 @@ import baguchan.revampedwolf.RevampedWolf;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -18,24 +16,9 @@ public class DataGenerators {
     public static void gatherData(GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getWorldLookupProvider();
+
+        event.createReloadableRegistryObjects(RegistryDataGenerator.RELOADABLE_BUILDER);
         generator.addProvider(true, new WolfEquipmentModelProvider(packOutput));
-        generator.addProvider(true, new Runner(packOutput, lookupProvider));
-    }
-
-    public static final class Runner extends RecipeProvider.Runner {
-        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-            super(output, lookupProvider);
-        }
-
-        @Override
-        protected RecipeProvider createRecipeProvider(HolderLookup.Provider lookupProvider, RecipeOutput output) {
-            return new CraftingGenerator(lookupProvider, output);
-        }
-
-        @Override
-        public String getName() {
-            return RevampedWolf.MODID + " recipes";
-        }
     }
 }

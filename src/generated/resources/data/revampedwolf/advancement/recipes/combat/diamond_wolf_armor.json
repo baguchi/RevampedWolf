@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "revampedwolf:diamond_wolf_armor"
+        "recipes": "revampedwolf:diamond_wolf_armor"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
